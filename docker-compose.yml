@@ -6,22 +6,7 @@ services:
       dockerfile: Dockerfile
     ports:
       - 15672:15672
-
-  client:
-    container_name: client
-    image: client:latest
-    entrypoint: python3 /main.py
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    links: 
-      - rabbitmq
-    environment:
-      - PYTHONUNBUFFERED=1
-      - MATCH_QUEUE=match_queue
-      - MATCH_FILE=matches.csv
-      - PLAYER_QUEUE=player_queue
-      - PLAYER_FILE=match_players.csv
+      - 5672:5672
 
   filter_rating_server_duration:
     container_name: filter_rating_server_duration
@@ -69,6 +54,7 @@ services:
       - PYTHONUNBUFFERED=1
       - GROUP_BY_MATCH_QUEUE=group_by_match_queue_1
       - MATCH_FIELD=match
+      - GROUPED_PLAYERS_QUEUE=grouped_players_queue
 
   reducer_group_by_match_2:
     container_name: reducer_group_by_match_2
@@ -83,3 +69,20 @@ services:
       - PYTHONUNBUFFERED=1
       - GROUP_BY_MATCH_QUEUE=group_by_match_queue_2
       - MATCH_FIELD=match
+      - GROUPED_PLAYERS_QUEUE=grouped_players_queue
+
+  filter_solo_winner_player:
+    container_name: filter_solo_winner_player
+    image: filter_solo_winner_player:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PYTHONUNBUFFERED=1
+      - GROUPED_PLAYERS_QUEUE=grouped_players_queue
+      - OUTPUT_QUEUE=output_queue_2
+      - RATING_FIELD=rating
+      - WINNER_FIELD=winner

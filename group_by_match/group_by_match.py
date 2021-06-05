@@ -32,9 +32,15 @@ class GroupByMatch():
         logging.info(f"Received {body} from client")
         ch.basic_ack(delivery_tag=method.delivery_tag)
         player = json.loads(body)
+        if len(player) == 0:
+            logging.info("[GROUP_BY_MATCH] The client already sent all messages")
+            for reducer_queue in self.reducer_queues:
+                send_message(ch, reducer_queue, body)
+            return
         match = player[self.match_field]
         hashed_match = int(sha256(match.encode()).hexdigest(), 16)
         if hashed_match % 2 == 0:
             send_message(ch, self.reducer_queues[0], body)
         else:
             send_message(ch, self.reducer_queues[1], body)
+    

@@ -2,14 +2,15 @@
 import logging
 import os
 
-from reducer_group_by_match import ReducerGroupByMatch
+from filter_solo_winner_player import FilterSoloWinnerPlayer
 
 def parse_config_params():
     config_params = {}
     try:
-        config_params["group_by_match_queue"] = os.environ["GROUP_BY_MATCH_QUEUE"]
-        config_params["match_field"] = os.environ["MATCH_FIELD"]
         config_params["grouped_players_queue"] = os.environ["GROUPED_PLAYERS_QUEUE"]
+        config_params["output_queue"] = os.environ["OUTPUT_QUEUE"]
+        config_params["rating_field"] = os.environ["RATING_FIELD"]
+        config_params["winner_field"] = os.environ["WINNER_FIELD"]
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting block manager".format(e))
@@ -23,9 +24,9 @@ def main():
 
     config_params = parse_config_params()
 
-    reducer_group_by_match = ReducerGroupByMatch(config_params["group_by_match_queue"],
-    config_params["match_field"], config_params["grouped_players_queue"])
-    reducer_group_by_match.start()
+    filter_swp = FilterSoloWinnerPlayer(config_params["grouped_players_queue"], 
+    config_params["output_queue"], config_params["rating_field"], config_params["winner_field"])
+    filter_swp.start()
 
 def initialize_log():
     """

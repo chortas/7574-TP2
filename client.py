@@ -27,7 +27,8 @@ class Client:
         self.__read_and_send(self.match_file, self.match_queue)
 
     def __read_and_send(self, file_name, queue):
-        connection, channel = create_connection_and_channel()
+        connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
+        channel = connection.channel()
 
         create_queue(channel, queue)
 
@@ -35,10 +36,12 @@ class Client:
             csv_reader = csv.DictReader(csv_file)
             counter = 0
             for element in csv_reader:
-                counter += 1
-                if counter == 1000: #TODO: delete this in demo
-                    break
+                logging.info(f"Counter: {counter}")
                 send_message(channel, queue, json.dumps(element))
+                if counter == 10: #TODO: delete this in demo
+                    send_message(channel, queue, json.dumps({}))                    
+                    break
                 #logging.info(f"Sent {element} to queue {queue}")
+                counter += 1
 
         connection.close()

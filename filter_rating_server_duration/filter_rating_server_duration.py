@@ -36,7 +36,7 @@ class FilterRatingServerDuration():
         ch.basic_ack(delivery_tag=method.delivery_tag)
         match = json.loads(body)
         if self.__meets_the_condition(match):
-            send_message(channel, self.output_queue, match[self.id_field])
+            send_message(ch, self.output_queue, match[self.id_field])
            
     def __meets_the_condition(self, match):
         average_rating = int(match[self.avg_rating_field]) if match[self.avg_rating_field] else 0
