@@ -39,13 +39,7 @@ class FilterRatingServerDuration():
         ch.basic_ack(delivery_tag=method.delivery_tag)
         match = json.loads(body)
         if self.__meets_the_condition(match):
-            ch.basic_publish(
-                    exchange='',
-                    routing_key=self.output_queue,
-                    body=match[self.id_field],
-                    properties=pika.BasicProperties(
-                        delivery_mode=2,  # make message persistent
-                    ))
+            send_message(channel, self.output_queue, match[self.id_field])
            
     def __meets_the_condition(self, match):
         average_rating = int(match[self.avg_rating_field]) if match[self.avg_rating_field] else 0

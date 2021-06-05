@@ -41,3 +41,15 @@ services:
       - DURATION_FIELD=duration
       - ID_FIELD=token
     
+  group_by_match:
+    container_name: group_by_match
+    image: group_by_match:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PYTHONUNBUFFERED=1
+      - PLAYER_QUEUE=player_queue
