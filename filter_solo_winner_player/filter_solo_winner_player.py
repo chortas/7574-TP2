@@ -34,7 +34,7 @@ class FilterSoloWinnerPlayer():
         if self.__meets_the_condition(match):
             match_id = list(match.keys())[0]
             logging.info(f"[FILTER_SOLO_WINNER_PLAYER] Sending id: {match_id}")
-            send_message(ch, self.output_queue, match_id)
+            send_message(ch, match_id, queue_name=self.output_queue)
         
     def __meets_the_condition(self, match):
         players = list(match.values())[0]

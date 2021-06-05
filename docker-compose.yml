@@ -19,7 +19,7 @@ services:
       - rabbitmq
     environment:
       - PYTHONUNBUFFERED=1
-      - MATCH_QUEUE=match_queue
+      - MATCH_EXCHANGE=match_exchange
       - OUTPUT_QUEUE=output_queue_1
       - AVG_RATING_FIELD=average_rating
       - SERVER_FIELD=server
@@ -87,3 +87,16 @@ services:
       - OUTPUT_QUEUE=output_queue_2
       - RATING_FIELD=rating
       - WINNER_FIELD=winner
+
+  matches_broadcaster:
+    container_name: matches_broadcaster
+    image: matches_broadcaster:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - MATCH_QUEUE=match_queue
+      - MATCH_EXCHANGE=match_exchange

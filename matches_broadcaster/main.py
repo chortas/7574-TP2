@@ -2,17 +2,13 @@
 import logging
 import os
 
-from filter_rating_server_duration import FilterRatingServerDuration
+from matches_broadcaster import MatchesBroadcaster
 
 def parse_config_params():
     config_params = {}
     try:
+        config_params["match_queue"] = os.environ["MATCH_QUEUE"]
         config_params["match_exchange"] = os.environ["MATCH_EXCHANGE"]
-        config_params["output_queue"] = os.environ["OUTPUT_QUEUE"]
-        config_params["avg_rating_field"] = os.environ["AVG_RATING_FIELD"]
-        config_params["server_field"] = os.environ["SERVER_FIELD"]
-        config_params["duration_field"] = os.environ["DURATION_FIELD"]
-        config_params["id_field"] = os.environ["ID_FIELD"]
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting block manager".format(e))
@@ -26,10 +22,8 @@ def main():
 
     config_params = parse_config_params()
 
-    filter_rsd = FilterRatingServerDuration(config_params["match_exchange"], 
-    config_params["output_queue"], config_params["avg_rating_field"], 
-    config_params["server_field"], config_params["duration_field"], config_params["id_field"])
-    filter_rsd.start()
+    matches_broadcaster = MatchesBroadcaster(config_params["match_queue"], config_params["match_exchange"])
+    matches_broadcaster.start()
 
 def initialize_log():
     """

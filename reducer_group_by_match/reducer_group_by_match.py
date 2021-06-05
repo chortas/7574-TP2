@@ -35,7 +35,7 @@ class ReducerGroupByMatch():
             for match in self.players_by_match:
                 logging.info(f"[REDUCER_GROUP_BY_MATCH] Sending {match}")
                 result = {match: self.players_by_match[match]}
-                send_message(ch, self.grouped_players_queue, json.dumps(result))
+                send_message(ch, json.dumps(result), queue_name=self.grouped_players_queue)
             return
         match = player[self.match_field]
         self.players_by_match[match] = self.players_by_match.get(match, [])

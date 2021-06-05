@@ -17,8 +17,8 @@ class Client:
     def start(self):
         wait_for_rabbit()
         
-        #self.match_sender.start()
-        self.player_sender.start()
+        self.match_sender.start()
+        #self.player_sender.start()
     
     def __send_players(self):
         self.__read_and_send(self.player_file, self.player_queue)
@@ -27,8 +27,7 @@ class Client:
         self.__read_and_send(self.match_file, self.match_queue)
 
     def __read_and_send(self, file_name, queue):
-        connection = pika.BlockingConnection(pika.ConnectionParameters(host='rabbitmq'))
-        channel = connection.channel()
+        connection, channel = create_connection_and_channel()
 
         create_queue(channel, queue)
 
@@ -37,9 +36,9 @@ class Client:
             counter = 0
             for element in csv_reader:
                 logging.info(f"Counter: {counter}")
-                send_message(channel, queue, json.dumps(element))
-                if counter == 10: #TODO: delete this in demo
-                    send_message(channel, queue, json.dumps({}))                    
+                send_message(channel, json.dumps(element), queue_name=queue)
+                if counter == 100000: #TODO: delete this in demo
+                    send_message(channel, json.dumps({}), queue_name=queue)                    
                     break
                 #logging.info(f"Sent {element} to queue {queue}")
                 counter += 1
