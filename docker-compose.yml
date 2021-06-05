@@ -1,0 +1,41 @@
+version: '3'
+services:
+  rabbitmq:
+    build:
+      context: ./rabbitmq
+      dockerfile: Dockerfile
+    ports:
+      - 15672:15672
+
+  client:
+    container_name: client
+    image: client:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MATCH_QUEUE=match_queue
+      - MATCH_FILE=matches.csv
+
+  filter_rating_server_duration:
+    container_name: filter_rating_server_duration
+    image: filter_rating_server_duration:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PYTHONUNBUFFERED=1
+      - MATCH_QUEUE=match_queue
+      - OUTPUT_QUEUE=output_queue_1
+      - AVG_RATING_FIELD=average_rating
+      - SERVER_FIELD=server
+      - DURATION_FIELD=duration
+      - ID_FIELD=token
+      

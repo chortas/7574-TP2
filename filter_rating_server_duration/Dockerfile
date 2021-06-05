@@ -1,0 +1,5 @@
+FROM ubuntu:18.04
+RUN apt update && apt install python3 python3-pip -y
+RUN pip3 install pika
+COPY filter_rating_server_duration /
+CMD ["python", "./main.py"]
