@@ -6,9 +6,10 @@ from common.utils import *
 from hashlib import sha256
 
 class GroupByMatch():
-    def __init__(self, player_queue, reducer_queues, match_field):
+    def __init__(self, player_queue, n_reducers, group_by_match_queue, match_field):
         self.player_queue = player_queue
-        self.reducer_queues = reducer_queues
+        self.reducer_queues = [f"{group_by_match_queue}_{i}" for i in range(1, n_reducers+1)]
+        self.n_reducers = n_reducers
         self.match_field = match_field
 
     def start(self):
@@ -39,8 +40,5 @@ class GroupByMatch():
             return
         match = player[self.match_field]
         hashed_match = int(sha256(match.encode()).hexdigest(), 16)
-        if hashed_match % 2 == 0:
-            send_message(ch, self.reducer_queues[0], body)
-        else:
-            send_message(ch, self.reducer_queues[1], body)
+        send_message(ch, self.reducer_queues[hashed_match % self.n_reducers], body)
     
