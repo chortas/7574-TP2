@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-import pika
-import sys
-import random
-import time
 import logging
 import csv
 import json
@@ -21,7 +17,7 @@ class Client:
     def start(self):
         wait_for_rabbit()
         
-        self.match_sender.start()
+        #self.match_sender.start()
         self.player_sender.start()
     
     def __send_players(self):

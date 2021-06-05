@@ -1,7 +1,4 @@
 #!/usr/bin/env python3
-import pika
-import time
-import os
 import logging
 import json
 import re

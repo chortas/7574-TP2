@@ -2,13 +2,12 @@
 import logging
 import os
 
-from group_by_match import GroupByMatch
+from reducer_group_by_match import ReducerGroupByMatch
 
 def parse_config_params():
     config_params = {}
     try:
-        config_params["player_queue"] = os.environ["PLAYER_QUEUE"]
-        config_params["group_by_match_queues"] = os.environ["GROUP_BY_MATCH_QUEUES"].split(',')
+        config_params["group_by_match_queue"] = os.environ["GROUP_BY_MATCH_QUEUE"]
         config_params["match_field"] = os.environ["MATCH_FIELD"]
 
     except KeyError as e:
@@ -23,9 +22,9 @@ def main():
 
     config_params = parse_config_params()
 
-    group_by_match = GroupByMatch(config_params["player_queue"], 
-    config_params["group_by_match_queues"], config_params["match_field"])
-    group_by_match.start()
+    reducer_group_by_match = ReducerGroupByMatch(config_params["group_by_match_queue"],
+    config_params["match_field"])
+    reducer_group_by_match.start()
 
 def initialize_log():
     """

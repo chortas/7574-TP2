@@ -24,6 +24,7 @@ docker-image:
 	docker build -f ./client/Dockerfile -t "client:latest" .
 	docker build -f ./filter_rating_server_duration/Dockerfile -t "filter_rating_server_duration:latest" .
 	docker build -f ./group_by_match/Dockerfile -t "group_by_match:latest" .
+	docker build -f ./reducer_group_by_match/Dockerfile -t "reducer_group_by_match:latest" .
 .PHONY: docker-image
 
 docker-compose-up: docker-image
