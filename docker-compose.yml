@@ -20,6 +20,8 @@ services:
       - PYTHONUNBUFFERED=1
       - MATCH_QUEUE=match_queue
       - MATCH_FILE=matches.csv
+      - PLAYER_QUEUE=player_queue
+      - PLAYER_FILE=match_players.csv
 
   filter_rating_server_duration:
     container_name: filter_rating_server_duration
@@ -38,4 +40,4 @@ services:
       - SERVER_FIELD=server
       - DURATION_FIELD=duration
       - ID_FIELD=token
-      
+    

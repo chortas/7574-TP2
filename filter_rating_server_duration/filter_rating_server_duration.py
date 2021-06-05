@@ -6,6 +6,7 @@ import logging
 import json
 import re
 from datetime import datetime, timedelta
+from common.utils import *
 
 class FilterRatingServerDuration():
     def __init__(self, match_queue, output_queue, avg_rating_field, server_field, 
@@ -18,15 +19,12 @@ class FilterRatingServerDuration():
         self.id_field = id_field
 
     def start(self):
-        # Wait for rabbitmq to come up
-        time.sleep(10)
+        wait_for_rabbit()
 
-        connection = pika.BlockingConnection(
-            pika.ConnectionParameters(host='rabbitmq'))
-        channel = connection.channel()
-        
-        channel.queue_declare(queue=self.match_queue, durable=True)
-        channel.queue_declare(queue=self.output_queue, durable=True)
+        connection, channel = create_connection_and_channel()
+
+        create_queue(channel, self.match_queue)
+        create_queue(channel, self.output_queue)
 
         self.__consume_matches(channel)
 

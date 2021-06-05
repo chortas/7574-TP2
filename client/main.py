@@ -9,7 +9,8 @@ def parse_config_params():
     try:
         config_params["match_queue"] = os.environ["MATCH_QUEUE"]
         config_params["match_file"] = os.environ["MATCH_FILE"]
-
+        config_params["player_queue"] = os.environ["PLAYER_QUEUE"]
+        config_params["player_file"] = os.environ["PLAYER_FILE"]
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting block manager".format(e))
     except ValueError as e:
@@ -22,7 +23,8 @@ def main():
 
     config_params = parse_config_params()
 
-    client = Client(config_params["match_queue"], config_params["match_file"])
+    client = Client(config_params["match_queue"], config_params["match_file"], 
+    config_params["player_queue"], config_params["player_file"])
     client.start()
 
 def initialize_log():
