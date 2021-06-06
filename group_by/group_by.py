@@ -11,7 +11,7 @@ class GroupBy():
         self.n_reducers = n_reducers
         self.group_by_field = group_by_field
         self.exchange_name = exchange_name
-        self.queue_name = queue_name 
+        self.queue_name = queue_name
     
     def start(self):
         wait_for_rabbit()
@@ -21,6 +21,8 @@ class GroupBy():
         if self.exchange_name:
             create_exchange(channel, self.exchange_name, "fanout")
             self.queue_name = create_and_bind_anonymous_queue(channel, self.exchange_name)
+        elif self.queue_name:
+            create_queue(channel, self.queue_name)
 
         for reducer_queue in self.reducer_queues:
             create_queue(channel, reducer_queue)
@@ -42,7 +44,8 @@ class GroupBy():
             for reducer_queue in self.reducer_queues:
                 send_message(ch, body, queue_name=reducer_queue)
             return
-        match = player[self.group_by_field]
-        hashed_match = int(sha256(match.encode()).hexdigest(), 16)
-        send_message(ch, body, queue_name=self.reducer_queues[hashed_match % self.n_reducers])
+        group_by_element = player[self.group_by_field]
+        logging.info(f"[GROUP_BY] Group by elemen: {group_by_element}")
+        hashed_element = int(sha256(group_by_element.encode()).hexdigest(), 16)
+        send_message(ch, body, queue_name=self.reducer_queues[hashed_element % self.n_reducers])
     

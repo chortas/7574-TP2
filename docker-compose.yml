@@ -266,3 +266,46 @@ services:
       - GROUPED_RESULT_QUEUE=grouped_top_civ_queue
       - MATCH_ID_FIELD=token
       - PLAYER_MATCH_FIELD=match
+
+  group_by_civ_rate_winner:
+    container_name: group_by_civ_rate_winner
+    image: group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - QUEUE_NAME=grouped_rate_winner_queue
+      - N_REDUCERS=2
+      - GROUP_BY_QUEUE=group_by_civ_rate_winner_queue
+      - GROUP_BY_FIELD=civ
+
+  reducer_group_by_civ_rate_winner_1:
+    container_name: reducer_group_by_civ_rate_winner_1
+    image: reducer_group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUP_BY_QUEUE=group_by_civ_rate_winner_queue_1
+      - GROUP_BY_FIELD=civ
+      - GROUPED_PLAYERS_QUEUE=winner_rate_calculator_queue
+
+  reducer_group_by_civ_rate_winner_2:
+    container_name: reducer_group_by_civ_rate_winner_2
+    image: reducer_group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUP_BY_QUEUE=group_by_civ_rate_winner_queue_2
+      - GROUP_BY_FIELD=civ
+      - GROUPED_PLAYERS_QUEUE=winner_rate_calculator_queue

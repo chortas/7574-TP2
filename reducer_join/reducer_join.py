@@ -70,4 +70,8 @@ class ReducerJoin():
         for token in self.matches_and_players:
             if token in self.matches and token in self.players:
                 players = self.matches_and_players[token] 
-                send_message(ch, json.dumps(players), queue_name=self.grouped_result_queue)
+                for player in players:
+                    send_message(ch, json.dumps(player), queue_name=self.grouped_result_queue)
+        
+        logging.info("To send empty body to group by")
+        send_message(ch, json.dumps({}), queue_name=self.grouped_result_queue)

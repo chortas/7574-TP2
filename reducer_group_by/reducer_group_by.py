@@ -31,12 +31,15 @@ class ReducerGroupBy():
         ch.basic_ack(delivery_tag=method.delivery_tag)
         player = json.loads(body)
         if len(player) == 0:
-            logging.info("[REDUCER_GROUP_BY] The client already sent all messages")
-            for group_by_element in self.players_to_group:
-                logging.info(f"[REDUCER_GROUP_BY] Sending {group_by_element}")
-                result = {group_by_element: self.players_to_group[group_by_element]}
-                send_message(ch, json.dumps(result), queue_name=self.grouped_players_queue)
-            return
+            return self.__handle_end_group_by(ch)
         group_by_element = player[self.group_by_field]
         self.players_to_group[group_by_element] = self.players_to_group.get(group_by_element, [])
         self.players_to_group[group_by_element].append(player)
+
+    def __handle_end_group_by(self, ch):
+        # TODO: handle duplicates
+        logging.info("[REDUCER_GROUP_BY] The client already sent all messages")
+        for group_by_element in self.players_to_group:
+            logging.info(f"[REDUCER_GROUP_BY] Sending {group_by_element} to {self.grouped_players_queue}")
+            result = {group_by_element: self.players_to_group[group_by_element]}
+            send_message(ch, json.dumps(result), queue_name=self.grouped_players_queue)
