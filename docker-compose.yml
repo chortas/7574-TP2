@@ -85,7 +85,7 @@ services:
 
   matches_broadcaster:
     container_name: matches_broadcaster
-    image: matches_broadcaster:latest
+    image: broadcaster:latest
     entrypoint: python3 /main.py
     restart: on-failure
     depends_on:
@@ -93,8 +93,8 @@ services:
     links: 
       - rabbitmq
     environment:
-      - MATCH_QUEUE=match_queue
-      - MATCH_EXCHANGE=match_exchange
+      - QUEUE_NAME=match_queue
+      - EXCHANGE_NAME=match_exchange
 
   filter_ladder_map_mirror:
     container_name: filter_ladder_map_mirror
@@ -117,7 +117,7 @@ services:
   
   players_broadcaster:
     container_name: players_broadcaster
-    image: players_broadcaster:latest
+    image: broadcaster:latest
     entrypoint: python3 /main.py
     restart: on-failure
     depends_on:
@@ -125,8 +125,8 @@ services:
     links: 
       - rabbitmq
     environment:
-      - PLAYER_QUEUE=player_queue
-      - PLAYER_EXCHANGE=player_exchange
+      - QUEUE_NAME=player_queue
+      - EXCHANGE_NAME=player_exchange
 
   players_cleaner:
     container_name: players_cleaner

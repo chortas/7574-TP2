@@ -26,7 +26,7 @@ def main():
 
     group_by_match = GroupByMatch(config_params["player_exchange"], int(config_params["n_reducers"]),
     config_params["group_by_match_queue"], config_params["match_field"])
-    #group_by_match.start()
+    group_by_match.start()
 
 def initialize_log():
     """

@@ -38,6 +38,7 @@ class FilterLadderMapMirror():
         ch.basic_ack(delivery_tag=method.delivery_tag)
         match = json.loads(body)
         if len(match) == 0:
+            logging.info("[FILTER_LADDER_MAP_MIRROR] The client already sent all messages")
             ch.basic_publish(exchange=self.match_token_exchange, routing_key=self.top_civ_routing_key, body=body)
             ch.basic_publish(exchange=self.match_token_exchange, routing_key=self.rate_winner_routing_key, body=body)
             return

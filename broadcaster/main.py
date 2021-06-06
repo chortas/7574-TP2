@@ -2,13 +2,13 @@
 import logging
 import os
 
-from players_broadcaster import PlayersBroadcaster
+from broadcaster import Broadcaster
 
 def parse_config_params():
     config_params = {}
     try:
-        config_params["player_queue"] = os.environ["PLAYER_QUEUE"]
-        config_params["player_exchange"] = os.environ["PLAYER_EXCHANGE"]
+        config_params["queue_name"] = os.environ["QUEUE_NAME"]
+        config_params["exchange_name"] = os.environ["EXCHANGE_NAME"]
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting".format(e))
@@ -22,8 +22,8 @@ def main():
 
     config_params = parse_config_params()
 
-    players_broadcaster = PlayersBroadcaster(config_params["player_queue"], config_params["player_exchange"])
-    players_broadcaster.start()
+    broadcaster = Broadcaster(config_params["queue_name"], config_params["exchange_name"])
+    broadcaster.start()
 
 def initialize_log():
     """

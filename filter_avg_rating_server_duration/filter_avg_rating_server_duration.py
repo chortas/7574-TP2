@@ -42,6 +42,7 @@ class FilterAvgRatingServerDuration():
            
     def __meets_the_condition(self, match):
         if len(match) == 0:
+            logging.info("[FILTER_AVG_RATING_SERVER_DURATION] The client already sent all messages")
             return False
         average_rating = int(match[self.avg_rating_field]) if match[self.avg_rating_field] else 0
         server = match[self.server_field]

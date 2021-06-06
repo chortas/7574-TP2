@@ -25,9 +25,8 @@ docker-image:
 	docker build -f ./group_by_match/Dockerfile -t "group_by_match:latest" .
 	docker build -f ./reducer_group_by_match/Dockerfile -t "reducer_group_by_match:latest" .
 	docker build -f ./filter_solo_winner_player/Dockerfile -t "filter_solo_winner_player:latest" .
-	docker build -f ./matches_broadcaster/Dockerfile -t "matches_broadcaster:latest" .
 	docker build -f ./filter_ladder_map_mirror/Dockerfile -t "filter_ladder_map_mirror:latest" .
-	docker build -f ./players_broadcaster/Dockerfile -t "players_broadcaster:latest" .
+	docker build -f ./broadcaster/Dockerfile -t "broadcaster:latest" .
 	docker build -f ./players_cleaner/Dockerfile -t "players_cleaner:latest" .
 	docker build -f ./filter_rating/Dockerfile -t "filter_rating:latest" .
 .PHONY: docker-image

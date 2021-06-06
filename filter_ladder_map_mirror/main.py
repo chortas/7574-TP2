@@ -32,7 +32,7 @@ def main():
     config_params["match_token_exchange"], config_params["top_civ_routing_key"], 
     config_params["rate_winner_routing_key"], config_params["ladder_field"], 
     config_params["map_field"], config_params["mirror_field"], config_params["id_field"]) 
-    #filter_lmm.start()
+    filter_lmm.start()
 
 def initialize_log():
     """
