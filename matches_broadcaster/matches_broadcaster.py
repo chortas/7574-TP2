@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 import logging
 import json
-from datetime import datetime, timedelta
 from common.utils import *
 
 class MatchesBroadcaster():

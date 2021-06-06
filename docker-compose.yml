@@ -100,3 +100,15 @@ services:
     environment:
       - MATCH_QUEUE=match_queue
       - MATCH_EXCHANGE=match_exchange
+
+  filter_ladder:
+    container_name: filter_ladder
+    image: filter_ladder:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - MATCH_EXCHANGE=match_exchange

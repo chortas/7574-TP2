@@ -26,6 +26,7 @@ docker-image:
 	docker build -f ./reducer_group_by_match/Dockerfile -t "reducer_group_by_match:latest" .
 	docker build -f ./filter_solo_winner_player/Dockerfile -t "filter_solo_winner_player:latest" .
 	docker build -f ./matches_broadcaster/Dockerfile -t "matches_broadcaster:latest" .
+	docker build -f ./filter_ladder/Dockerfile -t "filter_ladder:latest" .
 .PHONY: docker-image
 
 docker-compose-up: docker-image
