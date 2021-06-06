@@ -2,15 +2,16 @@
 import logging
 import os
 
-from group_by_match import GroupByMatch
+from filter_rating import FilterRating
 
 def parse_config_params():
     config_params = {}
     try:
         config_params["player_exchange"] = os.environ["PLAYER_EXCHANGE"]
-        config_params["n_reducers"] = os.environ["N_REDUCERS"]
-        config_params["group_by_match_queue"] = os.environ["GROUP_BY_MATCH_QUEUE"]
+        config_params["rating_field"] = os.environ["RATING_FIELD"]
         config_params["match_field"] = os.environ["MATCH_FIELD"]
+        config_params["civ_field"] = os.environ["CIV_FIELD"]
+        config_params["id_field"] = os.environ["ID_FIELD"]
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting".format(e))
@@ -24,9 +25,9 @@ def main():
 
     config_params = parse_config_params()
 
-    group_by_match = GroupByMatch(config_params["player_exchange"], int(config_params["n_reducers"]),
-    config_params["group_by_match_queue"], config_params["match_field"])
-    #group_by_match.start()
+    filter_rating = FilterRating(config_params["player_exchange"], config_params["rating_field"], 
+    config_params["match_field"], config_params["civ_field"], config_params["id_field"])
+    filter_rating.start()
 
 def initialize_log():
     """
