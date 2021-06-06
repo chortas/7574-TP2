@@ -8,9 +8,9 @@ services:
       - 15672:15672
       - 5672:5672
 
-  filter_rating_server_duration:
-    container_name: filter_rating_server_duration
-    image: filter_rating_server_duration:latest
+  filter_avg_rating_server_duration:
+    container_name: filter_avg_rating_server_duration
+    image: filter_avg_rating_server_duration:latest
     entrypoint: python3 /main.py
     restart: on-failure
     depends_on:

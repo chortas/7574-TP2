@@ -5,7 +5,7 @@ import re
 from datetime import datetime, timedelta
 from common.utils import *
 
-class FilterRatingServerDuration():
+class FilterAvgRatingServerDuration():
     def __init__(self, match_exchange, output_queue, avg_rating_field, server_field, 
     duration_field, id_field):
         self.match_exchange = match_exchange

@@ -2,7 +2,7 @@
 import logging
 import os
 
-from filter_rating_server_duration import FilterRatingServerDuration
+from filter_avg_rating_server_duration import FilterAvgRatingServerDuration
 
 def parse_config_params():
     config_params = {}
@@ -26,10 +26,10 @@ def main():
 
     config_params = parse_config_params()
 
-    filter_rsd = FilterRatingServerDuration(config_params["match_exchange"], 
+    filter_arsd = FilterAvgRatingServerDuration(config_params["match_exchange"], 
     config_params["output_queue"], config_params["avg_rating_field"], 
     config_params["server_field"], config_params["duration_field"], config_params["id_field"])
-    #filter_rsd.start()
+    #filter_arsd.start()
 
 def initialize_log():
     """
