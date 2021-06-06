@@ -352,3 +352,17 @@ services:
       - GROUP_BY_QUEUE=group_by_civ_top_civ_queue_2
       - GROUP_BY_FIELD=civ
       - GROUPED_PLAYERS_QUEUE=top_civ_calculator_queue
+  
+  winner_rate_calculator:
+    container_name: winner_rate_calculator
+    image: winner_rate_calculator:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUPED_PLAYERS_QUEUE=winner_rate_calculator_queue
+      - OUTPUT_QUEUE=output_queue_3
+      - WINNER_FIELD=winner
