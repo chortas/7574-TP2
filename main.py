@@ -12,9 +12,9 @@ def parse_config_params():
         config_params["player_queue"] = os.environ["PLAYER_QUEUE"]
         config_params["player_file"] = os.environ["PLAYER_FILE"]
     except KeyError as e:
-        raise KeyError("Key was not found. Error: {} .Aborting block manager".format(e))
+        raise KeyError("Key was not found. Error: {} .Aborting".format(e))
     except ValueError as e:
-        raise ValueError("Key could not be parsed. Error: {}. Aborting block manager".format(e))
+        raise ValueError("Key could not be parsed. Error: {}. Aborting".format(e))
 
     return config_params
 

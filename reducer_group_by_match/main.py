@@ -12,9 +12,9 @@ def parse_config_params():
         config_params["grouped_players_queue"] = os.environ["GROUPED_PLAYERS_QUEUE"]
 
     except KeyError as e:
-        raise KeyError("Key was not found. Error: {} .Aborting block manager".format(e))
+        raise KeyError("Key was not found. Error: {} .Aborting".format(e))
     except ValueError as e:
-        raise ValueError("Key could not be parsed. Error: {}. Aborting block manager".format(e))
+        raise ValueError("Key could not be parsed. Error: {}. Aborting".format(e))
 
     return config_params
 
@@ -25,7 +25,7 @@ def main():
 
     reducer_group_by_match = ReducerGroupByMatch(config_params["group_by_match_queue"],
     config_params["match_field"], config_params["grouped_players_queue"])
-    reducer_group_by_match.start()
+    #reducer_group_by_match.start()
 
 def initialize_log():
     """

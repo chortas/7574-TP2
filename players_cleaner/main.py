@@ -2,14 +2,14 @@
 import logging
 import os
 
-from filter_solo_winner_player import FilterSoloWinnerPlayer
+from players_cleaner import PlayersCleaner
 
 def parse_config_params():
     config_params = {}
     try:
-        config_params["grouped_players_queue"] = os.environ["GROUPED_PLAYERS_QUEUE"]
-        config_params["output_queue"] = os.environ["OUTPUT_QUEUE"]
-        config_params["rating_field"] = os.environ["RATING_FIELD"]
+        config_params["player_exchange"] = os.environ["PLAYER_EXCHANGE"]
+        config_params["match_field"] = os.environ["MATCH_FIELD"]
+        config_params["civ_field"] = os.environ["CIV_FIELD"]
         config_params["winner_field"] = os.environ["WINNER_FIELD"]
 
     except KeyError as e:
@@ -24,9 +24,9 @@ def main():
 
     config_params = parse_config_params()
 
-    filter_swp = FilterSoloWinnerPlayer(config_params["grouped_players_queue"], 
-    config_params["output_queue"], config_params["rating_field"], config_params["winner_field"])
-    filter_swp.start()
+    players_cleaner = PlayersCleaner(config_params["player_exchange"],
+    config_params["match_field"], config_params["civ_field"], config_params["winner_field"])
+    players_cleaner.start()
 
 def initialize_log():
     """

@@ -132,3 +132,18 @@ services:
     environment:
       - PLAYER_QUEUE=player_queue
       - PLAYER_EXCHANGE=player_exchange
+
+  players_cleaner:
+    container_name: players_cleaner
+    image: players_cleaner:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PLAYER_EXCHANGE=player_exchange
+      - MATCH_FIELD=match
+      - CIV_FIELD=civ
+      - WINNER_FIELD=winner

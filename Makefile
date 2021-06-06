@@ -28,6 +28,7 @@ docker-image:
 	docker build -f ./matches_broadcaster/Dockerfile -t "matches_broadcaster:latest" .
 	docker build -f ./filter_ladder_map_mirror/Dockerfile -t "filter_ladder_map_mirror:latest" .
 	docker build -f ./players_broadcaster/Dockerfile -t "players_broadcaster:latest" .
+	docker build -f ./players_cleaner/Dockerfile -t "players_cleaner:latest" .
 .PHONY: docker-image
 
 docker-compose-up: docker-image
