@@ -4,12 +4,15 @@ import json
 from common.utils import *
 
 class FilterRating():
-    def __init__(self, player_exchange, rating_field, match_field, civ_field, id_field):
+    def __init__(self, player_exchange, rating_field, match_field, civ_field, id_field,
+    join_exchange, join_routing_key):
         self.player_exchange = player_exchange
         self.rating_field = rating_field
         self.match_field = match_field
         self.civ_field = civ_field
         self.id_field = id_field
+        self.join_exchange = join_exchange
+        self.join_routing_key = join_routing_key
 
     def start(self):
         wait_for_rabbit()
@@ -19,7 +22,7 @@ class FilterRating():
         create_exchange(channel, self.player_exchange, "fanout")
         queue_name = create_and_bind_anonymous_queue(channel, self.player_exchange)
 
-        # create queue to produce join result
+        create_exchange(channel, self.join_exchange, "direct")
 
         self.__consume_players(channel, queue_name)
 
@@ -35,7 +38,7 @@ class FilterRating():
         player = json.loads(body)
         if len(player) == 0:
             logging.info("[FILTER_RATING] The client already sent all messages")
-            # send centinel to join
+            send_message(ch, body, queue_name=self.join_routing_key, exchange_name=self.join_exchange)
             return
         rating = int(player[self.rating_field]) if player[self.rating_field] else 0
         if rating > 2000:
@@ -43,5 +46,4 @@ class FilterRating():
                         self.civ_field: player[self.civ_field],
                         self.id_field: player[self.id_field]}
             logging.info(f"New player: {new_player}")
-            # send to join new_player
-        
+            send_message(ch, json.dumps(new_player), queue_name=self.join_routing_key, exchange_name=self.join_exchange)

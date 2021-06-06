@@ -160,6 +160,8 @@ services:
       - MATCH_FIELD=match
       - CIV_FIELD=civ
       - ID_FIELD=token
+      - JOIN_EXCHANGE=match_token_exchange
+      - JOIN_ROUTING_KEY=player_top_civ_routing_key
 
   join_rate_winner:
     container_name: join_rate_winner
@@ -177,4 +179,22 @@ services:
       - JOIN_QUEUE=join_rate_winner
       - MATCH_ID_FIELD=token
       - PLAYER_CONSUMER_ROUTING_KEY=player_rate_winner_routing_key
+      - PLAYER_MATCH_FIELD=match
+
+  join_top_civ:
+    container_name: join_top_civ
+    image: join:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - MATCH_TOKEN_EXCHANGE=match_token_exchange
+      - N_REDUCERS=2
+      - MATCH_CONSUMER_ROUTING_KEY=top_civ_routing_key
+      - JOIN_QUEUE=join_top_civ
+      - MATCH_ID_FIELD=token
+      - PLAYER_CONSUMER_ROUTING_KEY=player_top_civ_routing_key
       - PLAYER_MATCH_FIELD=match

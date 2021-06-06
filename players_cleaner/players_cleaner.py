@@ -39,7 +39,7 @@ class PlayersCleaner():
         player = json.loads(body)
         if len(player) == 0:
             logging.info("[PLAYERS_CLEANER] The client already sent all messages")
-            # send centinel to join
+            send_message(ch, body, queue_name=self.join_routing_key, exchange_name=self.join_exchange)
             return
         new_player = {self.match_field: player[self.match_field],
                     self.civ_field: player[self.civ_field],

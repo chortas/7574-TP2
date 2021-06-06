@@ -38,9 +38,9 @@ class Client:
                 logging.info(f"Counter: {counter}")
                 send_message(channel, json.dumps(element), queue_name=queue)
                 if counter == 10: #TODO: delete this in demo
-                    send_message(channel, json.dumps({}), queue_name=queue)                    
                     break
                 #logging.info(f"Sent {element} to queue {queue}")
                 counter += 1
 
+        send_message(channel, json.dumps({}), queue_name=queue)                    
         connection.close()

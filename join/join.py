@@ -48,11 +48,9 @@ class Join():
             return
         id_to_send = None
         if method.routing_key == self.match_consumer_routing_key:
-            logging.info(f"Recibí un match")
             id_to_send = body_parsed[self.match_id_field]
         if method.routing_key == self.player_consumer_routing_key:
-            logging.info(f"Recibí un player")
             id_to_send = body_parsed[self.player_match_field]
         hashed_id = int(sha256(id_to_send.encode()).hexdigest(), 16)
-        send_message(ch, body, queue_name=self.reducer_queues[hashed_id % self.n_reducers])
+        #send_message(ch, body, queue_name=self.reducer_queues[hashed_id % self.n_reducers])
     
