@@ -2,16 +2,14 @@
 import logging
 import os
 
-from filter_ladder import FilterLadder
+from filter_map import FilterMap
 
 def parse_config_params():
     config_params = {}
     try:
-        config_params["match_exchange"] = os.environ["MATCH_EXCHANGE"]
         config_params["ladder_exchange"] = os.environ["LADDER_EXCHANGE"]
         config_params["match_team_routing_key"] = os.environ["MATCH_TEAM_ROUTING_KEY"]
         config_params["match_solo_routing_key"] = os.environ["MATCH_SOLO_ROUTING_KEY"]
-        config_params["ladder_field"] = os.environ["LADDER_FIELD"]
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting block manager".format(e))
@@ -25,10 +23,9 @@ def main():
 
     config_params = parse_config_params()
 
-    filter_ladder = FilterLadder(config_params["match_exchange"], config_params["ladder_exchange"],
-    config_params["match_team_routing_key"], config_params["match_solo_routing_key"], 
-    config_params["ladder_field"]) 
-    filter_ladder.start()
+    filter_map = FilterMap(config_params["ladder_exchange"],
+    config_params["match_team_routing_key"], config_params["match_solo_routing_key"])
+    filter_map.start()
 
 def initialize_log():
     """

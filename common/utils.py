@@ -20,8 +20,14 @@ def send_message(channel, body, queue_name='', exchange_name=''):
         delivery_mode=2,  # make message persistent
     ))
 
-def create_and_bind_anonymous_queue(channel, exchange_name):
+def create_and_bind_anonymous_queue(channel, exchange_name, routing_keys=[]):
     result = channel.queue_declare(queue='', durable=True)
     queue_name = result.method.queue
-    channel.queue_bind(exchange=exchange_name, queue=queue_name)
+
+    if len(routing_keys) == 0:
+        channel.queue_bind(exchange=exchange_name, queue=queue_name)
+
+    for routing_key in routing_keys:
+        channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key=routing_key)
+
     return queue_name

@@ -112,3 +112,21 @@ services:
       - rabbitmq
     environment:
       - MATCH_EXCHANGE=match_exchange
+      - LADDER_EXCHANGE=ladder_exchange
+      - MATCH_TEAM_ROUTING_KEY=match_team_routing_key
+      - MATCH_SOLO_ROUTING_KEY=match_solo_routing_key
+      - LADDER_FIELD=ladder
+  
+  filter_map:
+    container_name: filter_map
+    image: filter_map:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - LADDER_EXCHANGE=ladder_exchange
+      - MATCH_TEAM_ROUTING_KEY=match_team_routing_key
+      - MATCH_SOLO_ROUTING_KEY=match_solo_routing_key

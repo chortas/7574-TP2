@@ -4,8 +4,13 @@ import json
 from common.utils import *
 
 class FilterLadder():
-    def __init__(self, match_exchange):
+    def __init__(self, match_exchange, ladder_exchange, match_team_routing_key, 
+    match_solo_routing_key, ladder_field):
         self.match_exchange = match_exchange
+        self.ladder_exchange = ladder_exchange
+        self.match_team_routing_key = match_team_routing_key
+        self.match_solo_routing_key = match_solo_routing_key
+        self.ladder_field = ladder_field
 
     def start(self):
         wait_for_rabbit()
@@ -13,9 +18,11 @@ class FilterLadder():
         connection, channel = create_connection_and_channel()
 
         create_exchange(channel, self.match_exchange, "fanout")
-        queue_name = create_and_bind_anonymous_queue(channel, self.match_exchange)
+        match_queue_name = create_and_bind_anonymous_queue(channel, self.match_exchange)
 
-        self.__consume_matches(channel, queue_name)
+        create_exchange(channel, self.ladder_exchange, "direct")
+
+        self.__consume_matches(channel, match_queue_name)
 
     def __consume_matches(self, channel, queue_name):
         logging.info('Waiting for messages. To exit press CTRL+C')
@@ -26,15 +33,13 @@ class FilterLadder():
     def __callback(self, ch, method, properties, body):
         logging.info(f"Received {body} from client")
         ch.basic_ack(delivery_tag=method.delivery_tag)
-        '''match = json.loads(body)
-        if self.__meets_the_condition(match):
-            send_message(ch, match[self.id_field], queue_name=self.output_queue)
-           
-    def __meets_the_condition(self, match):
+        match = json.loads(body)
         if len(match) == 0:
-            return False
-        average_rating = int(match[self.avg_rating_field]) if match[self.avg_rating_field] else 0
-        server = match[self.server_field]
-        duration = self.__parse_timedelta(match[self.duration_field])
-        return average_rating > 2000 and server in ("koreacentral", "southeastasia", "eastus") and duration > timedelta(hours=2)
-    '''
+            ch.basic_publish(exchange=self.ladder_exchange, routing_key=self.match_solo_routing_key, body=body)
+            ch.basic_publish(exchange=self.ladder_exchange, routing_key=self.match_team_routing_key, body=body)
+            return
+        ladder = match[self.ladder_field]
+        if ladder == "RM_1v1":
+            ch.basic_publish(exchange=self.ladder_exchange, routing_key=self.match_solo_routing_key, body=body)
+        if ladder == "RM_TEAM":
+            ch.basic_publish(exchange=self.ladder_exchange, routing_key=self.match_team_routing_key, body=body)
