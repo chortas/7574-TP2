@@ -309,3 +309,46 @@ services:
       - GROUP_BY_QUEUE=group_by_civ_rate_winner_queue_2
       - GROUP_BY_FIELD=civ
       - GROUPED_PLAYERS_QUEUE=winner_rate_calculator_queue
+
+  group_by_civ_top_civ:
+    container_name: group_by_civ_top_civ
+    image: group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - QUEUE_NAME=grouped_top_civ_queue
+      - N_REDUCERS=2
+      - GROUP_BY_QUEUE=group_by_civ_top_civ_queue
+      - GROUP_BY_FIELD=civ
+
+  reducer_group_by_civ_top_civ_1:
+    container_name: reducer_group_by_civ_top_civ_1
+    image: reducer_group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUP_BY_QUEUE=group_by_civ_top_civ_queue_1
+      - GROUP_BY_FIELD=civ
+      - GROUPED_PLAYERS_QUEUE=top_civ_calculator_queue
+
+  reducer_group_by_civ_top_civ_2:
+    container_name: reducer_group_by_civ_top_civ_2
+    image: reducer_group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUP_BY_QUEUE=group_by_civ_top_civ_queue_2
+      - GROUP_BY_FIELD=civ
+      - GROUPED_PLAYERS_QUEUE=top_civ_calculator_queue
