@@ -39,8 +39,8 @@ class FilterLadderMapMirror():
         match = json.loads(body)
         if len(match) == 0:
             logging.info("[FILTER_LADDER_MAP_MIRROR] The client already sent all messages")
-            ch.basic_publish(exchange=self.match_token_exchange, routing_key=self.top_civ_routing_key, body=body)
-            ch.basic_publish(exchange=self.match_token_exchange, routing_key=self.rate_winner_routing_key, body=body)
+            send_message(ch, body, queue_name=self.rate_winner_routing_key, exchange_name=self.match_token_exchange)
+            send_message(ch, body, queue_name=self.top_civ_routing_key, exchange_name=self.match_token_exchange)
             return
         match_ladder = match[self.ladder_field]
         match_map = match[self.map_field]
@@ -50,6 +50,6 @@ class FilterLadderMapMirror():
         new_match = {self.id_field: match[self.id_field]}
         
         if match_ladder == "RM_1v1" and match_map == "arena" and match_mirror == "False":
-            ch.basic_publish(exchange=self.match_token_exchange, routing_key=self.rate_winner_routing_key, body=json.dumps(new_match))
+            send_message(ch, json.dumps(new_match), queue_name=self.rate_winner_routing_key, exchange_name=self.match_token_exchange)
         if match_ladder == "RM_TEAM" and match_map == "islands":
-            ch.basic_publish(exchange=self.match_token_exchange, routing_key=self.top_civ_routing_key, body=json.dumps(new_match))
+            send_message(ch, json.dumps(new_match), queue_name=self.top_civ_routing_key, exchange_name=self.match_token_exchange)

@@ -2,16 +2,19 @@
 import logging
 import os
 
-from group_by_match import GroupByMatch
+from join import Join
 
 def parse_config_params():
     config_params = {}
     try:
-        config_params["player_exchange"] = os.environ["PLAYER_EXCHANGE"]
+        config_params["match_token_exchange"] = os.environ["MATCH_TOKEN_EXCHANGE"]
         config_params["n_reducers"] = os.environ["N_REDUCERS"]
-        config_params["group_by_match_queue"] = os.environ["GROUP_BY_MATCH_QUEUE"]
-        config_params["match_field"] = os.environ["MATCH_FIELD"]
-
+        config_params["match_consumer_routing_key"] = os.environ["MATCH_CONSUMER_ROUTING_KEY"]
+        config_params["join_queue"] = os.environ["JOIN_QUEUE"]
+        config_params["match_id_field"] = os.environ["MATCH_ID_FIELD"]
+        config_params["player_consumer_routing_key"] = os.environ["PLAYER_CONSUMER_ROUTING_KEY"]
+        config_params["player_match_field"] = os.environ["PLAYER_MATCH_FIELD"]
+        
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting".format(e))
     except ValueError as e:
@@ -24,9 +27,11 @@ def main():
 
     config_params = parse_config_params()
 
-    group_by_match = GroupByMatch(config_params["player_exchange"], int(config_params["n_reducers"]),
-    config_params["group_by_match_queue"], config_params["match_field"])
-    #group_by_match.start()
+    join = Join(config_params["match_token_exchange"], int(config_params["n_reducers"]),
+    config_params["match_consumer_routing_key"], config_params["join_queue"], 
+    config_params["match_id_field"], config_params["player_consumer_routing_key"],
+    config_params["player_match_field"])
+    join.start()
 
 def initialize_log():
     """

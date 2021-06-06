@@ -6,11 +6,14 @@ from common.utils import *
 from hashlib import sha256
 
 class PlayersCleaner():
-    def __init__(self, player_exchange, match_field, civ_field, winner_field):
+    def __init__(self, player_exchange, match_field, civ_field, winner_field, 
+    join_exchange, join_routing_key):
         self.player_exchange = player_exchange
         self.match_field = match_field
         self.civ_field = civ_field
         self.winner_field = winner_field 
+        self.join_exchange = join_exchange
+        self.join_routing_key = join_routing_key
 
     def start(self):
         wait_for_rabbit()
@@ -20,7 +23,7 @@ class PlayersCleaner():
         create_exchange(channel, self.player_exchange, "fanout")
         queue_name = create_and_bind_anonymous_queue(channel, self.player_exchange)
 
-        # create queue to produce join result
+        create_exchange(channel, self.join_exchange, "direct")
 
         self.__consume_players(channel, queue_name)
 
@@ -42,4 +45,4 @@ class PlayersCleaner():
                     self.civ_field: player[self.civ_field],
                     self.winner_field: player[self.winner_field]}
         logging.info(f"New player: {new_player}")
-        # send to join new_player
+        send_message(ch, json.dumps(new_player), queue_name=self.join_routing_key, exchange_name=self.join_exchange)
