@@ -2,15 +2,21 @@
 import logging
 import os
 
-from group_by_match import GroupByMatch
+from group_by import GroupBy
+from common.utils import *
 
 def parse_config_params():
     config_params = {}
     try:
-        config_params["player_exchange"] = os.environ["PLAYER_EXCHANGE"]
+        config_params["exchange_name"] = (os.environ["EXCHANGE_NAME"]
+                                            if "EXCHANGE_NAME" in os.environ
+                                            else "") 
+        config_params["queue_name"] = (os.environ["QUEUE_NAME"]
+                                            if "QUEUE_NAME" in os.environ
+                                            else "") 
         config_params["n_reducers"] = os.environ["N_REDUCERS"]
-        config_params["group_by_match_queue"] = os.environ["GROUP_BY_MATCH_QUEUE"]
-        config_params["match_field"] = os.environ["MATCH_FIELD"]
+        config_params["group_by_queue"] = os.environ["GROUP_BY_QUEUE"]
+        config_params["group_by_field"] = os.environ["GROUP_BY_FIELD"]
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting".format(e))
@@ -24,9 +30,10 @@ def main():
 
     config_params = parse_config_params()
 
-    group_by_match = GroupByMatch(config_params["player_exchange"], int(config_params["n_reducers"]),
-    config_params["group_by_match_queue"], config_params["match_field"])
-    #group_by_match.start()
+    group_by = GroupBy(int(config_params["n_reducers"]), config_params["group_by_queue"], 
+    config_params["group_by_field"], config_params["exchange_name"], 
+    config_params["queue_name"])
+    group_by.start()
 
 def initialize_log():
     """

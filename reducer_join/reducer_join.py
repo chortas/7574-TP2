@@ -56,7 +56,7 @@ class ReducerJoin():
                     if method.routing_key == self.match_consumer_routing_key
                     else body_parsed[self.player_match_field])
 
-        self.matches_and_players[id_to_join] =  self.matches_and_players.get(id_to_join, [])
+        self.matches_and_players[id_to_join] = self.matches_and_players.get(id_to_join, [])
 
         if method.routing_key == self.match_consumer_routing_key:
             self.matches.add(id_to_join)

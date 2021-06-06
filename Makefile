@@ -22,8 +22,8 @@ blockchain:
 
 docker-image:
 	docker build -f ./filter_avg_rating_server_duration/Dockerfile -t "filter_avg_rating_server_duration:latest" .
-	docker build -f ./group_by_match/Dockerfile -t "group_by_match:latest" .
-	docker build -f ./reducer_group_by_match/Dockerfile -t "reducer_group_by_match:latest" .
+	docker build -f ./group_by/Dockerfile -t "group_by:latest" .
+	docker build -f ./reducer_group_by/Dockerfile -t "reducer_group_by:latest" .
 	docker build -f ./filter_solo_winner_player/Dockerfile -t "filter_solo_winner_player:latest" .
 	docker build -f ./filter_ladder_map_mirror/Dockerfile -t "filter_ladder_map_mirror:latest" .
 	docker build -f ./broadcaster/Dockerfile -t "broadcaster:latest" .

@@ -29,7 +29,7 @@ def main():
     players_cleaner = PlayersCleaner(config_params["player_exchange"],
     config_params["match_field"], config_params["civ_field"], config_params["winner_field"],
     config_params["join_exchange"], config_params["join_routing_key"])
-    players_cleaner.start()
+    #players_cleaner.start()
 
 def initialize_log():
     """

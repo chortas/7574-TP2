@@ -17,7 +17,7 @@ class Client:
     def start(self):
         wait_for_rabbit()
         
-        self.match_sender.start()
+        #self.match_sender.start()
         self.player_sender.start()
     
     def __send_players(self):
@@ -37,7 +37,7 @@ class Client:
             for element in csv_reader:
                 logging.info(f"Counter: {counter}")
                 send_message(channel, json.dumps(element), queue_name=queue)
-                if counter == 10: #TODO: delete this in demo
+                if counter == 100: #TODO: delete this in demo
                     break
                 counter += 1
 
