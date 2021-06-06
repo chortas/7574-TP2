@@ -37,7 +37,7 @@ services:
       - rabbitmq
     environment:
       - PYTHONUNBUFFERED=1
-      - PLAYER_QUEUE=player_queue
+      - PLAYER_EXCHANGE=player_exchange
       - N_REDUCERS=2
       - GROUP_BY_MATCH_QUEUE=group_by_match_queue
       - MATCH_FIELD=match
@@ -120,3 +120,15 @@ services:
       - MIRROR_FIELD=mirror
       - ID_FIELD=token
   
+  players_broadcaster:
+    container_name: players_broadcaster
+    image: players_broadcaster:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - PLAYER_QUEUE=player_queue
+      - PLAYER_EXCHANGE=player_exchange

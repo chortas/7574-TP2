@@ -6,8 +6,8 @@ from common.utils import *
 from hashlib import sha256
 
 class GroupByMatch():
-    def __init__(self, player_queue, n_reducers, group_by_match_queue, match_field):
-        self.player_queue = player_queue
+    def __init__(self, player_exchange, n_reducers, group_by_match_queue, match_field):
+        self.player_exchange = player_exchange
         self.reducer_queues = [f"{group_by_match_queue}_{i}" for i in range(1, n_reducers+1)]
         self.n_reducers = n_reducers
         self.match_field = match_field
@@ -17,16 +17,18 @@ class GroupByMatch():
 
         connection, channel = create_connection_and_channel()
 
-        create_queue(channel, self.player_queue)
+        create_exchange(channel, self.player_exchange, "fanout")
+        queue_name = create_and_bind_anonymous_queue(channel, self.player_exchange)
+
         for reducer_queue in self.reducer_queues:
             create_queue(channel, reducer_queue)
 
-        self.__consume_players(channel)
+        self.__consume_players(channel, queue_name)
 
-    def __consume_players(self, channel):
+    def __consume_players(self, channel, queue_name):
         logging.info('Waiting for messages. To exit press CTRL+C')
         channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=self.player_queue, on_message_callback=self.__callback)
+        channel.basic_consume(queue=queue_name, on_message_callback=self.__callback)
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):

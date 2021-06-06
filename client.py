@@ -17,8 +17,8 @@ class Client:
     def start(self):
         wait_for_rabbit()
         
-        self.match_sender.start()
-        #self.player_sender.start()
+        #self.match_sender.start()
+        self.player_sender.start()
     
     def __send_players(self):
         self.__read_and_send(self.player_file, self.player_queue)

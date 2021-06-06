@@ -7,7 +7,7 @@ from group_by_match import GroupByMatch
 def parse_config_params():
     config_params = {}
     try:
-        config_params["player_queue"] = os.environ["PLAYER_QUEUE"]
+        config_params["player_exchange"] = os.environ["PLAYER_EXCHANGE"]
         config_params["n_reducers"] = os.environ["N_REDUCERS"]
         config_params["group_by_match_queue"] = os.environ["GROUP_BY_MATCH_QUEUE"]
         config_params["match_field"] = os.environ["MATCH_FIELD"]
@@ -24,9 +24,9 @@ def main():
 
     config_params = parse_config_params()
 
-    group_by_match = GroupByMatch(config_params["player_queue"], int(config_params["n_reducers"]),
+    group_by_match = GroupByMatch(config_params["player_exchange"], int(config_params["n_reducers"]),
     config_params["group_by_match_queue"], config_params["match_field"])
-    #group_by_match.start()
+    group_by_match.start()
 
 def initialize_log():
     """

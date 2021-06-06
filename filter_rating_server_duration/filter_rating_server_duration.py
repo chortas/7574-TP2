@@ -22,6 +22,7 @@ class FilterRatingServerDuration():
 
         create_exchange(channel, self.match_exchange, "fanout")
         queue_name = create_and_bind_anonymous_queue(channel, self.match_exchange)
+        
         create_queue(channel, self.output_queue)
 
         self.__consume_matches(channel, queue_name)
