@@ -101,9 +101,9 @@ services:
       - MATCH_QUEUE=match_queue
       - MATCH_EXCHANGE=match_exchange
 
-  filter_ladder:
-    container_name: filter_ladder
-    image: filter_ladder:latest
+  filter_ladder_map_mirror:
+    container_name: filter_ladder_map_mirror
+    image: filter_ladder_map_mirror:latest
     entrypoint: python3 /main.py
     restart: on-failure
     depends_on:
@@ -112,21 +112,11 @@ services:
       - rabbitmq
     environment:
       - MATCH_EXCHANGE=match_exchange
-      - LADDER_EXCHANGE=ladder_exchange
-      - MATCH_TEAM_ROUTING_KEY=match_team_routing_key
-      - MATCH_SOLO_ROUTING_KEY=match_solo_routing_key
+      - MATCH_TOKEN_EXCHANGE=match_token_exchange
+      - TOP_CIV_ROUTING_KEY=top_civ_routing_key
+      - RATE_WINNER_ROUTING_KEY=rate_winner_routing_key
       - LADDER_FIELD=ladder
+      - MAP_FIELD=map
+      - MIRROR_FIELD=mirror
+      - ID_FIELD=token
   
-  filter_map:
-    container_name: filter_map
-    image: filter_map:latest
-    entrypoint: python3 /main.py
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    links: 
-      - rabbitmq
-    environment:
-      - LADDER_EXCHANGE=ladder_exchange
-      - MATCH_TEAM_ROUTING_KEY=match_team_routing_key
-      - MATCH_SOLO_ROUTING_KEY=match_solo_routing_key
