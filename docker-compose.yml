@@ -176,7 +176,7 @@ services:
       - MATCH_TOKEN_EXCHANGE=match_token_exchange
       - N_REDUCERS=2
       - MATCH_CONSUMER_ROUTING_KEY=rate_winner_routing_key
-      - JOIN_QUEUE=join_rate_winner
+      - JOIN_EXCHANGE=join_rate_winner
       - MATCH_ID_FIELD=token
       - PLAYER_CONSUMER_ROUTING_KEY=player_rate_winner_routing_key
       - PLAYER_MATCH_FIELD=match
@@ -194,7 +194,75 @@ services:
       - MATCH_TOKEN_EXCHANGE=match_token_exchange
       - N_REDUCERS=2
       - MATCH_CONSUMER_ROUTING_KEY=top_civ_routing_key
-      - JOIN_QUEUE=join_top_civ
+      - JOIN_EXCHANGE=join_top_civ
       - MATCH_ID_FIELD=token
       - PLAYER_CONSUMER_ROUTING_KEY=player_top_civ_routing_key
+      - PLAYER_MATCH_FIELD=match
+
+  reducer_rate_winner_join_1:
+    container_name: reducer_rate_winner_join_1
+    image: reducer_join:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - JOIN_EXCHANGE=join_rate_winner_1
+      - MATCH_CONSUMER_ROUTING_KEY=rate_winner_routing_key
+      - PLAYER_CONSUMER_ROUTING_KEY=player_rate_winner_routing_key
+      - GROUPED_RESULT_QUEUE=grouped_rate_winner_queue
+      - MATCH_ID_FIELD=token
+      - PLAYER_MATCH_FIELD=match
+
+  reducer_rate_winner_join_2:
+    container_name: reducer_rate_winner_join_2
+    image: reducer_join:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - JOIN_EXCHANGE=join_rate_winner_2
+      - MATCH_CONSUMER_ROUTING_KEY=rate_winner_routing_key
+      - PLAYER_CONSUMER_ROUTING_KEY=player_rate_winner_routing_key
+      - GROUPED_RESULT_QUEUE=grouped_rate_winner_queue
+      - MATCH_ID_FIELD=token
+      - PLAYER_MATCH_FIELD=match
+
+  reducer_top_civ_join_1:
+    container_name: reducer_top_civ_join_1
+    image: reducer_join:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - JOIN_EXCHANGE=join_top_civ_1
+      - MATCH_CONSUMER_ROUTING_KEY=top_civ_routing_key
+      - PLAYER_CONSUMER_ROUTING_KEY=player_top_civ_routing_key
+      - GROUPED_RESULT_QUEUE=grouped_top_civ_queue
+      - MATCH_ID_FIELD=token
+      - PLAYER_MATCH_FIELD=match
+  
+  reducer_top_civ_join_2:
+    container_name: reducer_top_civ_join_2
+    image: reducer_join:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - JOIN_EXCHANGE=join_top_civ_2
+      - MATCH_CONSUMER_ROUTING_KEY=top_civ_routing_key
+      - PLAYER_CONSUMER_ROUTING_KEY=player_top_civ_routing_key
+      - GROUPED_RESULT_QUEUE=grouped_top_civ_queue
+      - MATCH_ID_FIELD=token
       - PLAYER_MATCH_FIELD=match

@@ -30,6 +30,7 @@ docker-image:
 	docker build -f ./players_cleaner/Dockerfile -t "players_cleaner:latest" .
 	docker build -f ./filter_rating/Dockerfile -t "filter_rating:latest" .
 	docker build -f ./join/Dockerfile -t "join:latest" .
+	docker build -f ./reducer_join/Dockerfile -t "reducer_join:latest" .
 .PHONY: docker-image
 
 docker-compose-up: docker-image

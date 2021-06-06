@@ -25,7 +25,7 @@ def main():
 
     reducer_group_by_match = ReducerGroupByMatch(config_params["group_by_match_queue"],
     config_params["match_field"], config_params["grouped_players_queue"])
-    #reducer_group_by_match.start()
+    reducer_group_by_match.start()
 
 def initialize_log():
     """
