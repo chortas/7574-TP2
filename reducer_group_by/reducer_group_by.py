@@ -43,3 +43,4 @@ class ReducerGroupBy():
             logging.info(f"[REDUCER_GROUP_BY] Sending {group_by_element} to {self.grouped_players_queue}")
             result = {group_by_element: self.players_to_group[group_by_element]}
             send_message(ch, json.dumps(result), queue_name=self.grouped_players_queue)
+        send_message(ch, json.dumps({}), queue_name=self.grouped_players_queue)

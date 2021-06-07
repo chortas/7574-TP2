@@ -366,3 +366,17 @@ services:
       - GROUPED_PLAYERS_QUEUE=winner_rate_calculator_queue
       - OUTPUT_QUEUE=output_queue_3
       - WINNER_FIELD=winner
+
+  top_civ_calculator:
+    container_name: top_civ_calculator
+    image: top_civ_calculator:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUPED_PLAYERS_QUEUE=top_civ_calculator_queue
+      - OUTPUT_QUEUE=output_queue_4
+      - ID_FIELD=token
