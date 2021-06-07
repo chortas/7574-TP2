@@ -16,7 +16,6 @@ class ReducerJoin():
         self.matches = set()
         self.players = set()
         self.len_join = 2 # to know when to stop
-        # add data structure to save joins
 
     def start(self):
         wait_for_rabbit()

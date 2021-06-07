@@ -37,7 +37,7 @@ class Client:
             for element in csv_reader:
                 logging.info(f"Counter: {counter}")
                 send_message(channel, json.dumps(element), queue_name=queue)
-                if counter == 100: #TODO: delete this in demo
+                if counter == 200000: #TODO: delete this in demo
                     break
                 counter += 1
 

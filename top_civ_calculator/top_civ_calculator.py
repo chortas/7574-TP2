@@ -5,10 +5,11 @@ from common.utils import *
 from collections import Counter
 
 class TopCivCalculator():
-    def __init__(self, grouped_players_queue, output_queue, id_field):
+    def __init__(self, grouped_players_queue, output_queue, id_field, sentinel_amount):
         self.grouped_players_queue = grouped_players_queue
         self.output_queue = output_queue
         self.id_field = id_field
+        self.sentinel_amount = sentinel_amount
         self.civilizations = {}
     
     def start(self):
@@ -46,6 +47,8 @@ class TopCivCalculator():
             self.civilizations[civ] = len(token_by_civ)
 
     def __send_top_5(self, channel):
+        self.sentinel_amount -= 1
+        if self.sentinel_amount != 0: return
         logging.info("To send top 5")
         top_5_civilizations = dict(Counter(self.civilizations).most_common(5))
         send_message(channel, json.dumps(top_5_civilizations), queue_name=self.output_queue)

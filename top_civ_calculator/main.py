@@ -10,6 +10,7 @@ def parse_config_params():
         config_params["grouped_players_queue"] = os.environ["GROUPED_PLAYERS_QUEUE"]
         config_params["output_queue"] = os.environ["OUTPUT_QUEUE"]
         config_params["id_field"] = os.environ["ID_FIELD"]
+        config_params["sentinel_amount"] = os.environ["SENTINEL_AMOUNT"]
         
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting".format(e))
@@ -24,7 +25,8 @@ def main():
     config_params = parse_config_params()
 
     top_civ_calculator = TopCivCalculator(config_params["grouped_players_queue"], 
-    config_params["output_queue"], config_params["id_field"])
+    config_params["output_queue"], config_params["id_field"], 
+    int(config_params["sentinel_amount"]))
     top_civ_calculator.start()
 
 def initialize_log():

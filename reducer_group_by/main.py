@@ -10,6 +10,9 @@ def parse_config_params():
         config_params["group_by_queue"] = os.environ["GROUP_BY_QUEUE"]
         config_params["group_by_field"] = os.environ["GROUP_BY_FIELD"]
         config_params["grouped_players_queue"] = os.environ["GROUPED_PLAYERS_QUEUE"]
+        config_params["sentinel_amount"] =  (os.environ["SENTINEL_AMOUNT"]
+                                            if "SENTINEL_AMOUNT" in os.environ
+                                            else 1) 
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting".format(e))
@@ -24,7 +27,8 @@ def main():
     config_params = parse_config_params()
 
     reducer_group_by = ReducerGroupBy(config_params["group_by_queue"],
-    config_params["group_by_field"], config_params["grouped_players_queue"])
+    config_params["group_by_field"], config_params["grouped_players_queue"], 
+    int(config_params["sentinel_amount"]))
     reducer_group_by.start()
 
 def initialize_log():

@@ -4,11 +4,12 @@ import json
 from common.utils import *
 
 class ReducerGroupBy():
-    def __init__(self, group_by_queue, group_by_field, grouped_players_queue):
+    def __init__(self, group_by_queue, group_by_field, grouped_players_queue, sentinel_amount):
         self.group_by_queue = group_by_queue
         self.group_by_field = group_by_field
         self.grouped_players_queue = grouped_players_queue
         self.players_to_group = {}
+        self.sentinel_amount = sentinel_amount
 
     def start(self):
         wait_for_rabbit()
@@ -37,7 +38,8 @@ class ReducerGroupBy():
         self.players_to_group[group_by_element].append(player)
 
     def __handle_end_group_by(self, ch):
-        # TODO: handle duplicates
+        self.sentinel_amount -= 1
+        if self.sentinel_amount != 0: return        
         logging.info("[REDUCER_GROUP_BY] The client already sent all messages")
         for group_by_element in self.players_to_group:
             logging.info(f"[REDUCER_GROUP_BY] Sending {group_by_element} to {self.grouped_players_queue}")
