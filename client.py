@@ -18,7 +18,7 @@ class Client:
         wait_for_rabbit()
         
         self.match_sender.start()
-        self.player_sender.start()
+        #self.player_sender.start()
     
     def __send_players(self):
         self.__read_and_send(self.player_file, self.player_queue)
@@ -32,14 +32,20 @@ class Client:
         create_queue(channel, queue)
 
         with open(file_name, mode='r') as csv_file:
-            csv_reader = csv.DictReader(csv_file)
-            counter = 0
+            csv_reader = csv.DictReader(csv_file)    
+            counter_lines = 0
+            global_counter = 0
+            lines = []
             for element in csv_reader:
-                logging.info(f"Counter: {counter}")
-                send_message(channel, json.dumps(element), queue_name=queue)
-                if counter == 200000: #TODO: delete this in demo
-                    break
-                counter += 1
+                global_counter += 1
+                lines.append(element)
+                counter_lines += 1
+                if counter_lines == 100000: #TODO: delete this in demo
+                    logging.info(f"Lei 100000 y global counter es {global_counter}")
+                    send_message(channel, json.dumps(lines), queue_name=queue)
+                    lines = []
+                    counter_lines = 0
 
+        send_message(channel, json.dumps(lines), queue_name=queue)                    
         send_message(channel, json.dumps({}), queue_name=queue)                    
         connection.close()

@@ -25,7 +25,7 @@ def main():
 
     winner_rate_calculator = WinnerRateCalculator(config_params["grouped_players_queue"], 
     config_params["output_queue"], config_params["winner_field"])
-    winner_rate_calculator.start()
+    #winner_rate_calculator.start()
 
 def initialize_log():
     """

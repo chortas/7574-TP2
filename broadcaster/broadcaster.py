@@ -25,5 +25,5 @@ class Broadcaster():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
+        logging.info(f"Received {len(body)} from client")
         send_message(ch, body, exchange_name=self.exchange_name)

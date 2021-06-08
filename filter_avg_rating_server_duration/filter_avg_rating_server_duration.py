@@ -35,9 +35,10 @@ class FilterAvgRatingServerDuration():
 
     def __callback(self, ch, method, properties, body):
         #logging.info(f"Received {body} from client")
-        match = json.loads(body)
-        if self.__meets_the_condition(match):
-            send_message(ch, match[self.id_field], queue_name=self.output_queue)
+        matches = json.loads(body)
+        for match in matches:
+            if self.__meets_the_condition(match):
+                send_message(ch, match[self.id_field], queue_name=self.output_queue)
            
     def __meets_the_condition(self, match):
         if len(match) == 0:
