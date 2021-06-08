@@ -25,12 +25,11 @@ class TopCivCalculator():
     def __consume_civilizations(self, channel):
         logging.info('Waiting for messages. To exit press CTRL+C')
         channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=self.grouped_players_queue, on_message_callback=self.__callback)
+        channel.basic_consume(queue=self.grouped_players_queue, on_message_callback=self.__callback, auto_ack=True)
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        logging.info(f"Received {body} from client")
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+        #logging.info(f"Received {body} from client")
         players_by_civ = json.loads(body)
 
         if len(players_by_civ) == 0:

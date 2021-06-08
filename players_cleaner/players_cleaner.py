@@ -30,12 +30,11 @@ class PlayersCleaner():
     def __consume_players(self, channel, queue_name):
         logging.info('Waiting for messages. To exit press CTRL+C')
         channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=queue_name, on_message_callback=self.__callback)
+        channel.basic_consume(queue=queue_name, on_message_callback=self.__callback, auto_ack=True)
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        logging.info(f"Received {body} from client")
-        ch.basic_ack(delivery_tag=method.delivery_tag)
+        #logging.info(f"Received {body} from client")
         player = json.loads(body)
         if len(player) == 0:
             logging.info("[PLAYERS_CLEANER] The client already sent all messages")
@@ -44,5 +43,5 @@ class PlayersCleaner():
         new_player = {self.match_field: player[self.match_field],
                     self.civ_field: player[self.civ_field],
                     self.winner_field: player[self.winner_field]}
-        logging.info(f"New player: {new_player}")
+        #logging.info(f"New player: {new_player}")
         send_message(ch, json.dumps(new_player), queue_name=self.join_routing_key, exchange_name=self.join_exchange)

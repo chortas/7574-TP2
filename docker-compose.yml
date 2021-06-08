@@ -24,7 +24,7 @@ services:
       - SERVER_FIELD=server
       - DURATION_FIELD=duration
       - ID_FIELD=token
-    
+
   group_by_match:
     container_name: group_by_match
     image: group_by:latest
@@ -114,7 +114,7 @@ services:
       - MAP_FIELD=map
       - MIRROR_FIELD=mirror
       - ID_FIELD=token
-  
+
   players_broadcaster:
     container_name: players_broadcaster
     image: broadcaster:latest
@@ -249,7 +249,7 @@ services:
       - GROUPED_RESULT_QUEUE=grouped_top_civ_queue
       - MATCH_ID_FIELD=token
       - PLAYER_MATCH_FIELD=match
-  
+
   reducer_top_civ_join_2:
     container_name: reducer_top_civ_join_2
     image: reducer_join:latest

@@ -1,4 +1,4 @@
-DOCKER_COMPOSE_FILE_NAME = "docker-compose-2.yml"
+DOCKER_COMPOSE_FILE_NAME = "docker-compose.yml"
 
 HEADER_AND_RABBIT = """version: '3'
 services:
