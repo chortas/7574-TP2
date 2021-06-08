@@ -29,7 +29,7 @@ def main():
     reducer_group_by = ReducerGroupBy(config_params["group_by_queue"],
     config_params["group_by_field"], config_params["grouped_players_queue"], 
     int(config_params["sentinel_amount"]))
-    #reducer_group_by.start()
+    reducer_group_by.start()
 
 def initialize_log():
     """

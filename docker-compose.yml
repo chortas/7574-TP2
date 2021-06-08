@@ -68,8 +68,38 @@ services:
       - GROUP_BY_FIELD=match
       - GROUPED_PLAYERS_QUEUE=grouped_players_queue
 
-  filter_solo_winner_player:
-    container_name: filter_solo_winner_player
+  filter_solo_winner_player_1:
+    container_name: filter_solo_winner_player_1
+    image: filter_solo_winner_player:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUPED_PLAYERS_QUEUE=grouped_players_queue
+      - OUTPUT_QUEUE=output_queue_2
+      - RATING_FIELD=rating
+      - WINNER_FIELD=winner
+
+  filter_solo_winner_player_2:
+    container_name: filter_solo_winner_player_2
+    image: filter_solo_winner_player:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUPED_PLAYERS_QUEUE=grouped_players_queue
+      - OUTPUT_QUEUE=output_queue_2
+      - RATING_FIELD=rating
+      - WINNER_FIELD=winner
+
+  filter_solo_winner_player_3:
+    container_name: filter_solo_winner_player_3
     image: filter_solo_winner_player:latest
     entrypoint: python3 /main.py
     restart: on-failure

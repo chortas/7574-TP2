@@ -19,6 +19,7 @@ class GroupBy():
         connection, channel = create_connection_and_channel()
 
         if self.exchange_name:
+            logging.info("Creo exchange")
             create_exchange(channel, self.exchange_name, "fanout")
             self.queue_name = create_and_bind_anonymous_queue(channel, self.exchange_name)
         elif self.queue_name:
@@ -37,14 +38,26 @@ class GroupBy():
 
     def __callback(self, ch, method, properties, body):
         #logging.info(f"Received {body} from client")
-        player = json.loads(body)
-        if len(player) == 0:
+        players = json.loads(body)
+        logging.info(f"Recibi players con len: {len(players)}")
+
+        if len(players) == 0:
             logging.info("[GROUP_BY] The client already sent all messages")
             for reducer_queue in self.reducer_queues:
                 send_message(ch, body, queue_name=reducer_queue)
             return
-        group_by_element = player[self.group_by_field]
-        #logging.info(f"[GROUP_BY] Group by elemen: {group_by_element}")
-        hashed_element = int(sha256(group_by_element.encode()).hexdigest(), 16)
-        send_message(ch, body, queue_name=self.reducer_queues[hashed_element % self.n_reducers])
-    
+
+        # { group_id_field: {players that have that id} }
+        message = {}
+        for player in players:
+            group_by_element = player[self.group_by_field]
+            hashed_element = int(sha256(group_by_element.encode()).hexdigest(), 16)
+            reducer_id = hashed_element % self.n_reducers
+            message[reducer_id] = message.get(reducer_id, [])
+            message[reducer_id].append(player)
+
+        logging.info(f"Estoy por enviar")
+        for reducer_id, elements in message.items():
+            send_message(ch, json.dumps(elements), queue_name=self.reducer_queues[reducer_id])
+        
+        logging.info(f"Procese los players")

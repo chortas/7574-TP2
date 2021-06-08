@@ -11,11 +11,12 @@ services:
       - 5672:5672
 """
 
-N_REDUCERS_GROUP_BY_MATCH = 2
+N_REDUCERS_GROUP_BY_MATCH = 5
 N_REDUCERS_RATE_WINNER_JOIN = 2
 N_REDUCERS_TOP_CIV_JOIN = 2
 N_REDUCERS_GROUP_BY_CIV_RATE_WINNER = 2
 N_REDUCERS_GROUP_BY_CIV_TOP_CIV = 2
+N_FILTER_SOLO_WINNER_PLAYER = 3
 
 def write_header_and_rabbit(compose_file):
     compose_file.write(HEADER_AND_RABBIT)
@@ -32,7 +33,7 @@ def write_section(compose_file, container_name, image, env_variables):
       - rabbitmq
     environment:\n"""
     for env, variable in env_variables.items():
-      section += f"      - {env}={variable}\n"    
+      section += f"      - {env}={variable}\n"
     compose_file.write(section)
 
 with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
@@ -58,7 +59,8 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     # filter_solo_winner_player
     env_variables = {"GROUPED_PLAYERS_QUEUE": "grouped_players_queue", "OUTPUT_QUEUE": "output_queue_2", 
     "RATING_FIELD": "rating", "WINNER_FIELD": "winner"}    
-    write_section(compose_file, "filter_solo_winner_player", "filter_solo_winner_player", env_variables)
+    for i in range(1, N_FILTER_SOLO_WINNER_PLAYER+1):
+      write_section(compose_file, f"filter_solo_winner_player_{i}", "filter_solo_winner_player", env_variables)
 
     # matches_broadcaster
     env_variables = {"QUEUE_NAME": "match_queue", "EXCHANGE_NAME": "match_exchange"}    

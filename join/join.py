@@ -38,7 +38,6 @@ class Join():
 
     def __callback(self, ch, method, properties, body):
         #logging.info(f"Received {body} from {method.routing_key}")
-        #ch.basic_ack(delivery_tag=method.delivery_tag)
         body_parsed = json.loads(body) 
         if len(body_parsed) == 0:
             logging.info("[JOIN] The client already sent all messages")

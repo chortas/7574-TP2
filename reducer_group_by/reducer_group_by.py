@@ -3,6 +3,8 @@ import logging
 import json
 from common.utils import *
 
+BATCH = 10000
+
 class ReducerGroupBy():
     def __init__(self, group_by_queue, group_by_field, grouped_players_queue, sentinel_amount):
         self.group_by_queue = group_by_queue
@@ -28,20 +30,30 @@ class ReducerGroupBy():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
-        player = json.loads(body)
-        if len(player) == 0:
+        players = json.loads(body)
+        if len(players) == 0:
+            logging.info("[REDUCER_GROUP_BY] Supuestamente termino")
             return self.__handle_end_group_by(ch)
-        group_by_element = player[self.group_by_field]
-        self.players_to_group[group_by_element] = self.players_to_group.get(group_by_element, [])
-        self.players_to_group[group_by_element].append(player)
+        
+        for player in players:
+            group_by_element = player[self.group_by_field]
+            self.players_to_group[group_by_element] = self.players_to_group.get(group_by_element, [])
+            self.players_to_group[group_by_element].append(player)
 
     def __handle_end_group_by(self, ch):
+        logging.info(f"[REDUCER_GROUP_BY] Sentinel amount es : {self.sentinel_amount}")
         self.sentinel_amount -= 1
+        logging.info(f"[REDUCER_GROUP_BY] [post] Sentinel amount es : {self.sentinel_amount}")
         if self.sentinel_amount != 0: return        
         logging.info("[REDUCER_GROUP_BY] The client already sent all messages")
+
+        result = {}
         for group_by_element in self.players_to_group:
-            logging.info(f"[REDUCER_GROUP_BY] Sending {group_by_element} to {self.grouped_players_queue}")
-            result = {group_by_element: self.players_to_group[group_by_element]}
-            send_message(ch, json.dumps(result), queue_name=self.grouped_players_queue)
+            #logging.info(f"[REDUCER_GROUP_BY] Sending {group_by_element} to {self.grouped_players_queue}")
+            result[group_by_element] = self.players_to_group[group_by_element]
+            if len(result) == BATCH:
+                send_message(ch, json.dumps(result), queue_name=self.grouped_players_queue)
+                result = {}
+        
+        if len(result) != 0: send_message(ch, json.dumps(result), queue_name=self.grouped_players_queue)
         send_message(ch, json.dumps({}), queue_name=self.grouped_players_queue)

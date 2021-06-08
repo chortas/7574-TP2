@@ -1,0 +1,81 @@
+BIEN Match: 17bc2296148b0837 - Player1 rating: 1479.0 - Player2 rating: 2186.0 - Rating diff: 47.80
+BIEN Match: 208f626be3222db9 - Player1 rating: 1590.0 - Player2 rating: 2126.0 - Rating diff: 33.71
+BIEN Match: 2a09aebb3fc9bd0e - Player1 rating: 1516.0 - Player2 rating: 2032.0 - Rating diff: 34.04
+BIEN Match: 3eDlIz5OuLG4kboq - Player1 rating: 1661.0 - Player2 rating: 2216.0 - Rating diff: 33.41
+BIEN Match: 3rq3g0EgQNJsv8Yk - Player1 rating: 1048.0 - Player2 rating: 1364.0 - Rating diff: 30.15
+BIEN Match: 6BEKM7mi87CSkT0g - Player1 rating: 1622.0 - Player2 rating: 2112.0 - Rating diff: 30.21
+BIEN Match: 6ad2366618573d2c - Player1 rating: 1637.0 - Player2 rating: 2149.0 - Rating diff: 31.28
+BIEN Match: 8fUo0R6Wy2KxfFU6 - Player1 rating: 1045.0 - Player2 rating: 1397.0 - Rating diff: 33.68
+BIEN Match: 9c0b37f01c78c905 - Player1 rating: 1529.0 - Player2 rating: 2232.0 - Rating diff: 45.98
+BIEN Match: F6rVJ5vgwQ3q2fxR - Player1 rating: 1437.0 - Player2 rating: 2099.0 - Rating diff: 46.07
+BIEN Match: IJfrVyW4lg0zaX4f - Player1 rating: 1032.0 - Player2 rating: 1361.0 - Rating diff: 31.88
+BIEN Match: INOZI3RTniGx26uS - Player1 rating: 1629.0 - Player2 rating: 2125.0 - Rating diff: 30.45
+BIEN Match: VDbrvDSmHuuSwUzq - Player1 rating: 1769.0 - Player2 rating: 2353.0 - Rating diff: 33.01
+BIEN Match: Zb9ktli5Kq7wkvHs - Player1 rating: 1047.0 - Player2 rating: 1411.0 - Rating diff: 34.77
+BIEN Match: aabUozA0fOW07MAn - Player1 rating: 1784.0 - Player2 rating: 2377.0 - Rating diff: 33.24
+BIEN Match: b6befe5a862d47ca - Player1 rating: 1433.0 - Player2 rating: 2117.0 - Rating diff: 47.73
+BIEN Match: bS0T1c3qIuoBziPH - Player1 rating: 1599.0 - Player2 rating: 2293.0 - Rating diff: 43.40
+BIEN Match: cc7b7217a5fb7b39 - Player1 rating: 1380.0 - Player2 rating: 1931.0 - Rating diff: 39.93
+BIEN Match: e2ff0d49f2a8573e - Player1 rating: 1466.0 - Player2 rating: 2206.0 - Rating diff: 50.48
+BIEN Match: jFVzUFfpCq3bnrGP - Player1 rating: 1096.0 - Player2 rating: 1458.0 - Rating diff: 33.03
+BIEN Match: kDGk7u1rSwSRZ1HD - Player1 rating: 1049.0 - Player2 rating: 1374.0 - Rating diff: 30.98
+BIEN Match: m3oNGmnkQvfi1mK2 - Player1 rating: 1712.0 - Player2 rating: 2284.0 - Rating diff: 33.41
+BIEN Match: qzmlUP526Ye5d4lf - Player1 rating: 1048.0 - Player2 rating: 1389.0 - Rating diff: 32.54
+BIEN Match: uPLo8pnj3A1YFlUe - Player1 rating: 1838.0 - Player2 rating: 2410.0 - Rating diff: 31.12
+BIEN Match: uthvdpzF2Yh3umPL - Player1 rating: 1047.0 - Player2 rating: 1396.0 - Rating diff: 33.33
+BIEN Match: vr4iQMRltkGt6XY3 - Player1 rating: 1670.0 - Player2 rating: 2289.0 - Rating diff: 37.07
+BIEN Match: yaXUQSygwmiXVdSw - Player1 rating: 1051.0 - Player2 rating: 1709.0 - Rating diff: 62.61
+
+CORRIDA
+Mi resultado:
+Match ZhLg3fe2SAKUne41
+Match Y89e2W87V28v7kIe
+Match e2ff0d49f2a8573e -> en el resultado
+Match Ni6jnrZVAeO2B3un
+Match bS0T1c3qIuoBziPH -> en el resultado
+Match yaXUQSygwmiXVdSw -> en el resultado
+Match 58f1457a9cc18b39
+Match 17bc2296148b0837 -> en el resultado
+Match b6befe5a862d47ca -> en el resultado
+Match 8a93d8306c758c0e
+Match F6rVJ5vgwQ3q2fxR -> en el resultado
+Match 9c0b37f01c78c905 -> en el resultado
+Match Hqx7dKH35Ds7CJS7
+Match Oj2DAxSO2mj4fsgn
+
+CORRIDA 2
+AV8Jgk3cg1c5dT3l
+ZhLg3fe2SAKUne41
+4bZz6zpk37OUetXo
+VzIGK43I8CU2UAVW
+gkNf8WBsfqE5XxSl
+Y89e2W87V28v7kIe
+T3q5UsWPBoDAO9ky
+511c1c10899aa557
+AILs5GHGikcl2Kx3
+KCZKaMzpgrfL1G1l
+1288b479d49e1a82
+Ni6jnrZVAeO2B3un
+IxCIPZlmwGH1UPbr
+12a889f7753efd9c
+oVzHKW7nWYgaPkoC
+jEOZ7ExEaPI11qsL
+58f1457a9cc18b39
+9fbc704f1bfcd092
+PtVfEDqs18CBWE0K
+8a93d8306c758c0e
+5c617a9f69818e6d
+1af840da24a16ab6
+Zlpbb1YwVTGrHhAv
+34cbKlWFPJDZjjiX
+a1866112f13feaba
+c5Y0Q3OcuziQ7ewo
+fXnFHDyAXC4a5yU0
+0611b29cf04780af
+Hqx7dKH35Ds7CJS7
+23fa44d17c530da6
+Oj2DAxSO2mj4fsgn
+L23jD6xxwlzDeBEk
+e7b5c4b5d29770aa
+MK9M6szbYngETMEo
+e7ty5PgZUDmf7VpT

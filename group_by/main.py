@@ -33,7 +33,7 @@ def main():
     group_by = GroupBy(int(config_params["n_reducers"]), config_params["group_by_queue"], 
     config_params["group_by_field"], config_params["exchange_name"], 
     config_params["queue_name"])
-    #group_by.start()
+    group_by.start()
 
 def initialize_log():
     """

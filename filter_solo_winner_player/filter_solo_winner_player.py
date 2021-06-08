@@ -28,15 +28,17 @@ class FilterSoloWinnerPlayer():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
-        match = json.loads(body)
-        if self.__meets_the_condition(match):
-            match_id = list(match.keys())[0]
-            #logging.info(f"[FILTER_SOLO_WINNER_PLAYER] Sending id: {match_id}")
-            send_message(ch, match_id, queue_name=self.output_queue)
+        matches = json.loads(body)
+        if len(matches) == 0:
+            logging.info(f"[FILTER_SOLO_WINNER_PLAYER] End of file")
+            return
         
-    def __meets_the_condition(self, match):
-        players = list(match.values())[0]
+        for match, players in matches.items():
+            if self.__meets_the_condition(match, players):
+                logging.info("Un juego cumplio la condicion!")
+                send_message(ch, match, queue_name=self.output_queue)
+        
+    def __meets_the_condition(self, match, players):
         if len(players) != 2: return False
         rating_winner, rating_loser = (0,0)
         for player in players:
@@ -46,4 +48,5 @@ class FilterSoloWinnerPlayer():
                 rating_winner = int(player[self.rating_field])
             else:
                 rating_loser = int(player[self.rating_field])
-        return rating_winner > 1000 and (rating_loser - rating_winner) / rating_loser > 0.3
+
+        return rating_loser != 0 and rating_winner > 1000 and ((rating_loser - rating_winner) / rating_winner) * 100 > 30
