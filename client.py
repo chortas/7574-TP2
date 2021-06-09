@@ -45,7 +45,6 @@ class Client:
                 global_counter = 0
                 lines = []
                 for element in csv_reader:
-                    #writer.writerow(element)
                     global_counter += 1
                     lines.append(element)
                     counter_lines += 1
@@ -54,7 +53,7 @@ class Client:
                         send_message(channel, json.dumps(lines), queue_name=queue)
                         lines = []
                         counter_lines = 0
-
+                
         if len(lines) != 0: send_message(channel, json.dumps(lines), queue_name=queue)                    
         
         #send the sentinel

@@ -24,6 +24,7 @@ class ReducerJoin():
 
         connection, channel = create_connection_and_channel()
 
+        logging.info(f"El join exchange es: {self.join_exchange}")
         create_exchange(channel, self.join_exchange, exchange_type="direct")
         queue_name = create_and_bind_anonymous_queue(channel, self.join_exchange, 
         routing_keys=[self.match_consumer_routing_key, self.player_consumer_routing_key])
@@ -59,9 +60,13 @@ class ReducerJoin():
         self.matches_and_players[id_to_join] = self.matches_and_players.get(id_to_join, [])
 
         if method.routing_key == self.match_consumer_routing_key:
+            if id_to_join == "YvzP7zGvnFOaIzv8":
+                logging.info(f"Llego el id: {id_to_join} de los matches")
             self.matches.add(id_to_join)
 
         if method.routing_key == self.player_consumer_routing_key:
+            if id_to_join == "YvzP7zGvnFOaIzv8":
+                logging.info(f"Llego el id: {id_to_join} de los players")            
             self.players.add(id_to_join)
             self.matches_and_players[id_to_join].append(body_parsed)
 
@@ -70,12 +75,14 @@ class ReducerJoin():
         n_entries = 0
         for token, players in self.matches_and_players.items():
             if token in self.matches and token in self.players:
+                #logging.info(f"El token a mergear: {token}")
                 n_entries += len(players)
                 for player in players:
                     result.append(player)
                 if len(result) == BATCH:
                     send_message(ch, json.dumps(result), queue_name=self.grouped_result_queue)
                     result = []
+        #logging.info(f"Se envia: {result}")
         logging.info(f"ENTRIES: {n_entries}")
 
         logging.info("To send empty body to group by")

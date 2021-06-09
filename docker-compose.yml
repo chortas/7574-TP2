@@ -161,7 +161,7 @@ services:
       - rabbitmq
     environment:
       - MATCH_TOKEN_EXCHANGE=match_token_exchange
-      - N_REDUCERS=1
+      - N_REDUCERS=2
       - MATCH_CONSUMER_ROUTING_KEY=rate_winner_routing_key
       - JOIN_EXCHANGE=join_rate_winner
       - MATCH_ID_FIELD=token
@@ -197,6 +197,23 @@ services:
       - rabbitmq
     environment:
       - JOIN_EXCHANGE=join_rate_winner_1
+      - MATCH_CONSUMER_ROUTING_KEY=rate_winner_routing_key
+      - PLAYER_CONSUMER_ROUTING_KEY=player_rate_winner_routing_key
+      - GROUPED_RESULT_QUEUE=grouped_rate_winner_queue
+      - MATCH_ID_FIELD=token
+      - PLAYER_MATCH_FIELD=match
+
+  reducer_rate_winner_join_2:
+    container_name: reducer_rate_winner_join_2
+    image: reducer_join:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - JOIN_EXCHANGE=join_rate_winner_2
       - MATCH_CONSUMER_ROUTING_KEY=rate_winner_routing_key
       - PLAYER_CONSUMER_ROUTING_KEY=player_rate_winner_routing_key
       - GROUPED_RESULT_QUEUE=grouped_rate_winner_queue
@@ -265,7 +282,7 @@ services:
       - GROUP_BY_QUEUE=group_by_civ_rate_winner_queue_1
       - GROUP_BY_FIELD=civ
       - GROUPED_PLAYERS_QUEUE=winner_rate_calculator_queue
-      - SENTINEL_AMOUNT=1
+      - SENTINEL_AMOUNT=2
 
   group_by_civ_top_civ:
     container_name: group_by_civ_top_civ
