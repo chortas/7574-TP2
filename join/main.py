@@ -31,7 +31,7 @@ def main():
     config_params["match_consumer_routing_key"], config_params["join_exchange"], 
     config_params["match_id_field"], config_params["player_consumer_routing_key"],
     config_params["player_match_field"])
-    #join.start()
+    join.start()
 
 def initialize_log():
     """

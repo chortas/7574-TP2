@@ -29,7 +29,7 @@ def main():
     filter_arsd = FilterAvgRatingServerDuration(config_params["match_exchange"], 
     config_params["output_queue"], config_params["avg_rating_field"], 
     config_params["server_field"], config_params["duration_field"], config_params["id_field"])
-    filter_arsd.start()
+    #filter_arsd.start()
 
 def initialize_log():
     """

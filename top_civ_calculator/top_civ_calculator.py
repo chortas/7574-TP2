@@ -29,7 +29,6 @@ class TopCivCalculator():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
         players_by_civ = json.loads(body)
 
         if len(players_by_civ) == 0:
@@ -48,6 +47,6 @@ class TopCivCalculator():
     def __send_top_5(self, channel):
         self.sentinel_amount -= 1
         if self.sentinel_amount != 0: return
-        logging.info("To send top 5")
+        logging.info(f"To send top 5 -> civilizations: {self.civilizations}")
         top_5_civilizations = dict(Counter(self.civilizations).most_common(5))
         send_message(channel, json.dumps(top_5_civilizations), queue_name=self.output_queue)

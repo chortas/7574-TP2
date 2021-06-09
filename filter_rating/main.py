@@ -30,7 +30,7 @@ def main():
     filter_rating = FilterRating(config_params["player_exchange"], config_params["rating_field"], 
     config_params["match_field"], config_params["civ_field"], config_params["id_field"],
     config_params["join_exchange"], config_params["join_routing_key"])
-    #filter_rating.start()
+    filter_rating.start()
 
 def initialize_log():
     """

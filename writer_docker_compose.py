@@ -14,7 +14,7 @@ services:
 N_REDUCERS_GROUP_BY_MATCH = 5
 N_REDUCERS_RATE_WINNER_JOIN = 2
 N_REDUCERS_TOP_CIV_JOIN = 2
-N_REDUCERS_GROUP_BY_CIV_RATE_WINNER = 2
+N_REDUCERS_GROUP_BY_CIV_RATE_WINNER = 1
 N_REDUCERS_GROUP_BY_CIV_TOP_CIV = 2
 N_FILTER_SOLO_WINNER_PLAYER = 3
 
@@ -42,10 +42,10 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     #filter_avg_rating_server_duration
     env_variables = {"MATCH_EXCHANGE": "match_exchange", "OUTPUT_QUEUE": "output_queue_1", 
     "AVG_RATING_FIELD": "average_rating", "SERVER_FIELD": "server", "DURATION_FIELD": "duration", "ID_FIELD": "token"}
-    write_section(compose_file, "filter_avg_rating_server_duration", "filter_avg_rating_server_duration", env_variables)
+    write_section(compose_file, f"filter_avg_rating_server_duration", "filter_avg_rating_server_duration", env_variables)
 
     #group_by_match
-    GROUP_BY_MATCH_QUEUE = "group_by_match_queue"
+    ''''GROUP_BY_MATCH_QUEUE = "group_by_match_queue"
     env_variables = {"EXCHANGE_NAME": "player_exchange", "N_REDUCERS": N_REDUCERS_GROUP_BY_MATCH, "GROUP_BY_QUEUE": GROUP_BY_MATCH_QUEUE,
     "GROUP_BY_FIELD": "match"}    
     write_section(compose_file, "group_by_match", "group_by", env_variables)
@@ -54,8 +54,8 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     for i in range(1, N_REDUCERS_GROUP_BY_MATCH+1):
       env_variables = {"GROUP_BY_QUEUE": f"{GROUP_BY_MATCH_QUEUE}_{i}", "GROUP_BY_FIELD": "match", 
       "GROUPED_PLAYERS_QUEUE": "grouped_players_queue"}        
-      write_section(compose_file, f"reducer_group_by_match_{i}", "reducer_group_by", env_variables)
-
+      write_section(compose_file, f"reducer_group_by_match_{i}", "reducer_group_by", env_variables)'''
+    
     # filter_solo_winner_player
     env_variables = {"GROUPED_PLAYERS_QUEUE": "grouped_players_queue", "OUTPUT_QUEUE": "output_queue_2", 
     "RATING_FIELD": "rating", "WINNER_FIELD": "winner"}    
@@ -79,7 +79,7 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     # players_cleaner
     env_variables = {"PLAYER_EXCHANGE": "player_exchange", "MATCH_FIELD": "match", "CIV_FIELD": "civ", "WINNER_FIELD": "winner",
     "JOIN_EXCHANGE": "match_token_exchange", "JOIN_ROUTING_KEY": "player_rate_winner_routing_key"}
-    write_section(compose_file, "players_cleaner", "players_cleaner", env_variables)    
+    write_section(compose_file, "players_cleaner", "players_cleaner", env_variables)
 
     # filter_rating
     env_variables = {"PLAYER_EXCHANGE": "player_exchange", "RATING_FIELD": "rating", "MATCH_FIELD": "match", 

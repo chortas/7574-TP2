@@ -33,15 +33,22 @@ class FilterRating():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
-        player = json.loads(body)
-        if len(player) == 0:
+        players = json.loads(body)
+        if len(players) == 0:
             logging.info("[FILTER_RATING] The client already sent all messages")
             send_message(ch, body, queue_name=self.join_routing_key, exchange_name=self.join_exchange)
             return
-        rating = int(player[self.rating_field]) if player[self.rating_field] else 0
-        if rating > 2000:
-            new_player = {self.match_field: player[self.match_field],
+
+        logging.info("Estoy en el callback del filtro")
+
+        result = []
+        for player in players:
+            rating = int(player[self.rating_field]) if player[self.rating_field] else 0
+            if rating > 2000:
+                new_player = {self.match_field: player[self.match_field],
                         self.civ_field: player[self.civ_field],
                         self.id_field: player[self.id_field]}
-            send_message(ch, json.dumps(new_player), queue_name=self.join_routing_key, exchange_name=self.join_exchange)
+                result.append(new_player)
+        
+        logging.info("Estoy mandando al join")
+        send_message(ch, json.dumps(result), queue_name=self.join_routing_key, exchange_name=self.join_exchange)

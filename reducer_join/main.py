@@ -30,7 +30,7 @@ def main():
     config_params["match_consumer_routing_key"],config_params["player_consumer_routing_key"],
     config_params["grouped_result_queue"], config_params["match_id_field"],
     config_params["player_match_field"])
-    #reducer_join.start()
+    reducer_join.start()
 
 def initialize_log():
     """

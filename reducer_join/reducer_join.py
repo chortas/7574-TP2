@@ -3,6 +3,8 @@ import logging
 import json
 from common.utils import *
 
+BATCH = 10000
+
 class ReducerJoin():
     def __init__(self, join_exchange, match_consumer_routing_key, player_consumer_routing_key,
     grouped_result_queue, match_id_field, player_match_field):
@@ -37,11 +39,11 @@ class ReducerJoin():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
-        body_parsed = json.loads(body) 
-        if len(body_parsed) == 0:
+        elements = json.loads(body) 
+        if len(elements) == 0:
             return self.__handle_end_join(ch)
-        self.__store_matches_and_players(body_parsed, method)
+        for element in elements:
+            self.__store_matches_and_players(element, method)
     
     def __handle_end_join(self, ch):
         self.len_join -= 1
@@ -64,12 +66,18 @@ class ReducerJoin():
             self.matches_and_players[id_to_join].append(body_parsed)
 
     def __send_to_grouped_queue(self, ch):
-        logging.info(f"Matches and players: {self.matches_and_players}")
-        for token in self.matches_and_players:
+        result = []
+        n_entries = 0
+        for token, players in self.matches_and_players.items():
             if token in self.matches and token in self.players:
-                players = self.matches_and_players[token] 
+                n_entries += len(players)
                 for player in players:
-                    send_message(ch, json.dumps(player), queue_name=self.grouped_result_queue)
-        
+                    result.append(player)
+                if len(result) == BATCH:
+                    send_message(ch, json.dumps(result), queue_name=self.grouped_result_queue)
+                    result = []
+        logging.info(f"ENTRIES: {n_entries}")
+
         logging.info("To send empty body to group by")
+        if len(result) != 0: send_message(ch, json.dumps(result), queue_name=self.grouped_result_queue)
         send_message(ch, json.dumps({}), queue_name=self.grouped_result_queue)

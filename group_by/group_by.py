@@ -19,7 +19,6 @@ class GroupBy():
         connection, channel = create_connection_and_channel()
 
         if self.exchange_name:
-            logging.info("Creo exchange")
             create_exchange(channel, self.exchange_name, "fanout")
             self.queue_name = create_and_bind_anonymous_queue(channel, self.exchange_name)
         elif self.queue_name:
@@ -37,7 +36,6 @@ class GroupBy():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
         players = json.loads(body)
         logging.info(f"Recibi players con len: {len(players)}")
 

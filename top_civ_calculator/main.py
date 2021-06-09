@@ -27,7 +27,7 @@ def main():
     top_civ_calculator = TopCivCalculator(config_params["grouped_players_queue"], 
     config_params["output_queue"], config_params["id_field"], 
     int(config_params["sentinel_amount"]))
-    #top_civ_calculator.start()
+    top_civ_calculator.start()
 
 def initialize_log():
     """

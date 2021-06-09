@@ -34,14 +34,16 @@ class PlayersCleaner():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
-        player = json.loads(body)
-        if len(player) == 0:
+        players = json.loads(body)
+        if len(players) == 0:
             logging.info("[PLAYERS_CLEANER] The client already sent all messages")
             send_message(ch, body, queue_name=self.join_routing_key, exchange_name=self.join_exchange)
             return
-        new_player = {self.match_field: player[self.match_field],
+        
+        new_players = []
+        for player in players:
+            new_players.append({self.match_field: player[self.match_field],
                     self.civ_field: player[self.civ_field],
-                    self.winner_field: player[self.winner_field]}
-        #logging.info(f"New player: {new_player}")
-        send_message(ch, json.dumps(new_player), queue_name=self.join_routing_key, exchange_name=self.join_exchange)
+                    self.winner_field: player[self.winner_field]})
+                    
+        send_message(ch, json.dumps(new_players), queue_name=self.join_routing_key, exchange_name=self.join_exchange)

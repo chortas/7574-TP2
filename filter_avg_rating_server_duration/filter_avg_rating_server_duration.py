@@ -34,7 +34,6 @@ class FilterAvgRatingServerDuration():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from client")
         matches = json.loads(body)
         for match in matches:
             if self.__meets_the_condition(match):

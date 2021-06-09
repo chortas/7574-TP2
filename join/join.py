@@ -37,18 +37,30 @@ class Join():
         channel.start_consuming()
 
     def __callback(self, ch, method, properties, body):
-        #logging.info(f"Received {body} from {method.routing_key}")
-        body_parsed = json.loads(body) 
-        if len(body_parsed) == 0:
+        elements_parsed = json.loads(body) 
+        if len(elements_parsed) == 0:
             logging.info("[JOIN] The client already sent all messages")
             for reducer_exchange in self.reducer_exchanges:
                 send_message(ch, body, queue_name=method.routing_key, exchange_name=reducer_exchange)
             return
+        
+        message = {}
+        for element in elements_parsed:
+            id_to_hash = self.__get_id_to_hash(method, element)
+            hashed_id = int(sha256(id_to_hash.encode()).hexdigest(), 16)
+            reducer_id = hashed_id % self.n_reducers
+            message[reducer_id] = message.get(reducer_id, [])
+            message[reducer_id].append(element)
+
+        logging.info(f"Estoy por enviar")
+        for reducer_id, elements in message.items():
+            send_message(ch, json.dumps(elements), queue_name=method.routing_key, 
+            exchange_name=self.reducer_exchanges[hashed_id % self.n_reducers])
+       
+    def __get_id_to_hash(self, method, element):
         id_to_hash = None
         if method.routing_key == self.match_consumer_routing_key:
-            id_to_hash = body_parsed[self.match_id_field]
+            id_to_hash = element[self.match_id_field]
         if method.routing_key == self.player_consumer_routing_key:
-            id_to_hash = body_parsed[self.player_match_field]
-        hashed_id = int(sha256(id_to_hash.encode()).hexdigest(), 16)
-        send_message(ch, body, queue_name=method.routing_key, exchange_name=self.reducer_exchanges[hashed_id % self.n_reducers])
-    
+            id_to_hash = element[self.player_match_field]
+        return id_to_hash
