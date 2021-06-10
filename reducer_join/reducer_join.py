@@ -3,17 +3,16 @@ import logging
 import json
 from common.utils import *
 
-BATCH = 10000
-
 class ReducerJoin():
     def __init__(self, join_exchange, match_consumer_routing_key, player_consumer_routing_key,
-    grouped_result_queue, match_id_field, player_match_field):
+    grouped_result_queue, match_id_field, player_match_field, batch_to_send):
         self.join_exchange = join_exchange
         self.match_consumer_routing_key = match_consumer_routing_key
         self.player_consumer_routing_key = player_consumer_routing_key
         self.grouped_result_queue = grouped_result_queue
         self.match_id_field = match_id_field
         self.player_match_field = player_match_field
+        self.batch_to_send = batch_to_send
         self.matches_and_players = {}
         self.matches = set()
         self.players = set()
@@ -67,7 +66,7 @@ class ReducerJoin():
                 n_entries += len(players)
                 for player in players:
                     result.append(player)
-                if len(result) == BATCH:
+                if len(result) == self.batch_to_send:
                     send_message(ch, json.dumps(result), queue_name=self.grouped_result_queue)
                     result = []
         logging.info(f"ENTRIES: {n_entries}")

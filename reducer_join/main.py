@@ -13,6 +13,7 @@ def parse_config_params():
         config_params["grouped_result_queue"] = os.environ["GROUPED_RESULT_QUEUE"]
         config_params["match_id_field"] = os.environ["MATCH_ID_FIELD"]
         config_params["player_match_field"] = os.environ["PLAYER_MATCH_FIELD"]
+        config_params["batch_to_send"] = os.environ["BATCH_TO_SEND"]
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting".format(e))
@@ -29,7 +30,7 @@ def main():
     reducer_join = ReducerJoin(config_params["join_exchange"], 
     config_params["match_consumer_routing_key"],config_params["player_consumer_routing_key"],
     config_params["grouped_result_queue"], config_params["match_id_field"],
-    config_params["player_match_field"])
+    config_params["player_match_field"], int(config_params["batch_to_send"]))
     reducer_join.start()
 
 def initialize_log():

@@ -3,15 +3,15 @@ import logging
 import json
 from common.utils import *
 
-BATCH = 10000
-
 class ReducerGroupBy():
-    def __init__(self, group_by_queue, group_by_field, grouped_players_queue, sentinel_amount):
+    def __init__(self, group_by_queue, group_by_field, grouped_players_queue, sentinel_amount,
+    batch_to_send):
         self.group_by_queue = group_by_queue
         self.group_by_field = group_by_field
         self.grouped_players_queue = grouped_players_queue
         self.players_to_group = {}
         self.sentinel_amount = sentinel_amount
+        self.batch_to_send = batch_to_send
 
     def start(self):
         wait_for_rabbit()
@@ -42,7 +42,7 @@ class ReducerGroupBy():
         result = {}
         for group_by_element in self.players_to_group:
             result[group_by_element] = self.players_to_group[group_by_element]
-            if len(result) == BATCH:
+            if len(result) == self.batch_to_send:
                 send_message(ch, json.dumps(result), queue_name=self.grouped_players_queue)
                 result = {}
         

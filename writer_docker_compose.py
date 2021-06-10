@@ -53,7 +53,7 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     #reducers_group_by_match
     for i in range(1, N_REDUCERS_GROUP_BY_MATCH+1):
       env_variables = {"GROUP_BY_QUEUE": f"{GROUP_BY_MATCH_QUEUE}_{i}", "GROUP_BY_FIELD": "match", 
-      "GROUPED_PLAYERS_QUEUE": "grouped_players_queue_filter_swp"}        
+      "GROUPED_PLAYERS_QUEUE": "grouped_players_queue_filter_swp", "BATCH_TO_SEND": 1000}        
       write_section(compose_file, f"reducer_group_by_match_{i}", "reducer_group_by", env_variables)
     
     # filter_solo_winner_player
@@ -105,14 +105,14 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     for i in range(1, N_REDUCERS_RATE_WINNER_JOIN+1):
       env_variables = {"JOIN_EXCHANGE": f"{JOIN_RATE_EXCHANGE}_{i}", "MATCH_CONSUMER_ROUTING_KEY": "rate_winner_routing_key",
       "PLAYER_CONSUMER_ROUTING_KEY": "player_rate_winner_routing_key", 
-      "GROUPED_RESULT_QUEUE": "grouped_rate_winner_queue", "MATCH_ID_FIELD": "token", "PLAYER_MATCH_FIELD": "match"}
+      "GROUPED_RESULT_QUEUE": "grouped_rate_winner_queue", "MATCH_ID_FIELD": "token", "PLAYER_MATCH_FIELD": "match", "BATCH_TO_SEND": 1000}
       write_section(compose_file, f"reducer_rate_winner_join_{i}", "reducer_join", env_variables)
 
     # reducers_top_civ_join
     for i in range(1, N_REDUCERS_TOP_CIV_JOIN+1):
       env_variables = {"JOIN_EXCHANGE": f"{JOIN_TOP_CIV_EXCHANGE}_{i}", "MATCH_CONSUMER_ROUTING_KEY": "top_civ_routing_key",
       "PLAYER_CONSUMER_ROUTING_KEY": "player_top_civ_routing_key", 
-      "GROUPED_RESULT_QUEUE": "grouped_top_civ_queue", "MATCH_ID_FIELD": "token", "PLAYER_MATCH_FIELD": "match"}
+      "GROUPED_RESULT_QUEUE": "grouped_top_civ_queue", "MATCH_ID_FIELD": "token", "PLAYER_MATCH_FIELD": "match", "BATCH_TO_SEND": 1000}
       write_section(compose_file, f"reducer_top_civ_join_{i}", "reducer_join", env_variables)
 
     # group_by_civ_rate_winner
@@ -126,7 +126,7 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     for i in range(1, N_REDUCERS_GROUP_BY_CIV_RATE_WINNER+1):
       env_variables = {"GROUP_BY_QUEUE": F"{GROUP_BY_CIV_RATE_WINNER_QUEUE}_{i}",
       "GROUP_BY_FIELD": "civ", "GROUPED_PLAYERS_QUEUE": "winner_rate_calculator_queue",
-      "SENTINEL_AMOUNT": N_REDUCERS_RATE_WINNER_JOIN}
+      "SENTINEL_AMOUNT": N_REDUCERS_RATE_WINNER_JOIN, "BATCH_TO_SEND": 1000}
       write_section(compose_file, f"reducer_group_by_civ_rate_winner_{i}", "reducer_group_by", env_variables)
 
     # group_by_civ_top_civ
@@ -140,7 +140,7 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     for i in range(1, N_REDUCERS_GROUP_BY_CIV_TOP_CIV+1):
       env_variables = {"GROUP_BY_QUEUE": F"{GROUP_BY_CIV_TOP_CIV_QUEUE}_{i}",
       "GROUP_BY_FIELD": "civ", "GROUPED_PLAYERS_QUEUE": "top_civ_calculator_queue",
-      "SENTINEL_AMOUNT": N_REDUCERS_TOP_CIV_JOIN}
+      "SENTINEL_AMOUNT": N_REDUCERS_TOP_CIV_JOIN, "BATCH_TO_SEND": 1000}
       write_section(compose_file, f"reducer_group_by_civ_top_civ_{i}", "reducer_group_by", env_variables)
 
     # winner_rate_calculator

@@ -29,7 +29,6 @@ class FilterSoloWinnerPlayer():
         
         for match, players in matches.items():
             if self.__meets_the_condition(match, players):
-                logging.info("Estoy por escribir en output 2")
                 send_message(ch, match, queue_name=self.output_queue)
         
     def __meets_the_condition(self, match, players):

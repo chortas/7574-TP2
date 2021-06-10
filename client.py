@@ -5,14 +5,13 @@ import json
 from threading import Thread
 from common.utils import *
 
-BATCH = 100000
-
 class Client:
-    def __init__(self, match_queue, match_file, player_queue, player_file):
+    def __init__(self, match_queue, match_file, player_queue, player_file, batch_to_send):
         self.match_queue = match_queue
         self.match_file = match_file
         self.player_queue = player_queue
         self.player_file = player_file
+        self.batch_to_send = batch_to_send
         self.match_sender = Thread(target=self.__send_matches)
         self.player_sender = Thread(target=self.__send_players)
 
@@ -48,8 +47,8 @@ class Client:
                     global_counter += 1
                     lines.append(element)
                     counter_lines += 1
-                    if counter_lines == BATCH: #TODO: delete this in demo
-                        logging.info(f"[{file_name}] Read {BATCH} lines and global counter is {global_counter}")
+                    if counter_lines == self.batch_to_send:
+                        logging.info(f"[{file_name}] Read {self.batch_to_send} lines and global counter is {global_counter}")
                         send_message(channel, json.dumps(lines), queue_name=queue)
                         lines = []
                         counter_lines = 0

@@ -5,6 +5,7 @@ ENV MATCH_QUEUE=match_queue
 ENV MATCH_FILE=matches.csv
 ENV PLAYER_QUEUE=player_queue
 ENV PLAYER_FILE=match_players.csv
+ENV BATCH_TO_SEND=100000
 COPY client.py /
 COPY main.py /
 COPY match_players.csv /

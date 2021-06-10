@@ -31,5 +31,4 @@ class WinnerRateCalculator():
                     victories += 1
             winner_rate = (victories / len(players)) * 100
             result = {civ: winner_rate}
-            logging.info("Estoy por escribir en output 3") #TODO: borrar
             send_message(ch, json.dumps(result), queue_name=self.output_queue)
