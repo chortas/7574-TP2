@@ -16,13 +16,7 @@ class Broadcaster():
         create_queue(channel, self.queue_name)
         create_exchange(channel, self.exchange_name, "fanout")
 
-        self.__consume_matches(channel)
-
-    def __consume_matches(self, channel):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=self.queue_name, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, self.queue_name, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         logging.info(f"Received {len(json.loads(body))} from client")

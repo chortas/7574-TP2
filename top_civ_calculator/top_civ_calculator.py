@@ -20,13 +20,7 @@ class TopCivCalculator():
         create_queue(channel, self.grouped_players_queue)
         create_queue(channel, self.output_queue)
 
-        self.__consume_civilizations(channel)
-
-    def __consume_civilizations(self, channel):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=self.grouped_players_queue, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, self.grouped_players_queue, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         players_by_civ = json.loads(body)

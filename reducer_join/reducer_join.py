@@ -30,13 +30,7 @@ class ReducerJoin():
 
         create_queue(channel, self.grouped_result_queue)
 
-        self.__consume_matches_and_players(channel, queue_name)
-
-    def __consume_matches_and_players(self, channel, queue_name):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=queue_name, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, queue_name, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         elements = json.loads(body) 
@@ -80,6 +74,6 @@ class ReducerJoin():
 
         logging.info("To send empty body to group by")
         if len(result) != 0: 
-            logging.info("Mandoooo")
+            logging.info("Mandoooo") #TODO: borrar
             send_message(ch, json.dumps(result), queue_name=self.grouped_result_queue)
         send_message(ch, json.dumps({}), queue_name=self.grouped_result_queue)

@@ -24,13 +24,7 @@ class FilterRating():
 
         create_exchange(channel, self.join_exchange, "direct")
 
-        self.__consume_players(channel, queue_name)
-
-    def __consume_players(self, channel, queue_name):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=queue_name, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, queue_name, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         players = json.loads(body)
@@ -39,13 +33,16 @@ class FilterRating():
             send_message(ch, body, queue_name=self.join_routing_key, exchange_name=self.join_exchange)
             return
 
-        result = []
+        message = self.__get_message(players)
+        send_message(ch, json.dumps(message), queue_name=self.join_routing_key, exchange_name=self.join_exchange)
+
+    def __get_message(self, players):
+        message = []
         for player in players:
             rating = int(player[self.rating_field]) if player[self.rating_field] else 0
             if rating > 2000:
                 new_player = {self.match_field: player[self.match_field],
                         self.civ_field: player[self.civ_field],
                         self.id_field: player[self.id_field]}
-                result.append(new_player)
-        
-        send_message(ch, json.dumps(result), queue_name=self.join_routing_key, exchange_name=self.join_exchange)
+                message.append(new_player)
+        return message

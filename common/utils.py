@@ -1,5 +1,6 @@
 import pika
 import time
+import logging
 
 def wait_for_rabbit():
     time.sleep(15)
@@ -31,3 +32,9 @@ def create_and_bind_anonymous_queue(channel, exchange_name, routing_keys=[]):
         channel.queue_bind(exchange=exchange_name, queue=queue_name, routing_key=routing_key)
 
     return queue_name
+
+def consume(channel, queue_name, callback):
+    logging.info('Waiting for messages. To exit press CTRL+C')
+    channel.basic_qos(prefetch_count=1)
+    channel.basic_consume(queue=queue_name, on_message_callback=callback, auto_ack=True)
+    channel.start_consuming()

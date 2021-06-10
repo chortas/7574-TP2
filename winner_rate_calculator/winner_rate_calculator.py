@@ -17,13 +17,7 @@ class WinnerRateCalculator():
         create_queue(channel, self.grouped_players_queue)
         create_queue(channel, self.output_queue)
 
-        self.__consume_civilizations(channel)
-
-    def __consume_civilizations(self, channel):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=self.grouped_players_queue, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, self.grouped_players_queue, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         logging.info("Estoy en el callback de winner_rate_calculator")
@@ -37,5 +31,5 @@ class WinnerRateCalculator():
                     victories += 1
             winner_rate = (victories / len(players)) * 100
             result = {civ: winner_rate}
-            logging.info("Estoy por escribir en output 3")
+            logging.info("Estoy por escribir en output 3") #TODO: borrar
             send_message(ch, json.dumps(result), queue_name=self.output_queue)

@@ -27,13 +27,7 @@ class GroupBy():
         for reducer_queue in self.reducer_queues:
             create_queue(channel, reducer_queue)
 
-        self.__consume_players(channel)
-
-    def __consume_players(self, channel):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=self.queue_name, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, self.queue_name, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         players = json.loads(body)
@@ -44,6 +38,13 @@ class GroupBy():
             return
 
         # { group_id_field: {players that have that id} }
+        message = self.__get_message(players)
+
+        for reducer_id, elements in message.items():
+            send_message(ch, json.dumps(elements), queue_name=self.reducer_queues[reducer_id])
+        
+
+    def __get_message(self, players):
         message = {}
         for player in players:
             group_by_element = player[self.group_by_field]
@@ -51,7 +52,5 @@ class GroupBy():
             reducer_id = hashed_element % self.n_reducers
             message[reducer_id] = message.get(reducer_id, [])
             message[reducer_id].append(player)
-
-        for reducer_id, elements in message.items():
-            send_message(ch, json.dumps(elements), queue_name=self.reducer_queues[reducer_id])
+        return message
         

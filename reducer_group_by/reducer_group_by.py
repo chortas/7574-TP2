@@ -21,13 +21,7 @@ class ReducerGroupBy():
         create_queue(channel, self.group_by_queue)
         create_queue(channel, self.grouped_players_queue)
 
-        self.__consume_players(channel)
-
-    def __consume_players(self, channel):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=self.group_by_queue, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, self.group_by_queue, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         players = json.loads(body)
@@ -41,9 +35,7 @@ class ReducerGroupBy():
             self.players_to_group[group_by_element].append(player)
 
     def __handle_end_group_by(self, ch):
-        logging.info(f"[REDUCER_GROUP_BY] Sentinel amount es : {self.sentinel_amount}")
         self.sentinel_amount -= 1
-        logging.info(f"[REDUCER_GROUP_BY] [post] Sentinel amount es : {self.sentinel_amount}")
         if self.sentinel_amount != 0: return        
         logging.info("[REDUCER_GROUP_BY] The client already sent all messages")
 

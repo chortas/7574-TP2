@@ -25,25 +25,26 @@ class PlayersCleaner():
 
         create_exchange(channel, self.join_exchange, "direct")
 
-        self.__consume_players(channel, queue_name)
-
-    def __consume_players(self, channel, queue_name):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=queue_name, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, queue_name, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         players = json.loads(body)
         if len(players) == 0:
-            logging.info("[PLAYERS_CLEANER] The client already sent all messages")
-            send_message(ch, body, queue_name=self.join_routing_key, exchange_name=self.join_exchange)
-            return
-        
+            self.__handle_end_cleaner(ch, body)
+
+        new_players = self.__get_new_players(players)
+        send_message(ch, json.dumps(new_players), queue_name=self.join_routing_key, exchange_name=self.join_exchange)
+
+    def __handle_end_cleaner(self, ch, body):
+        logging.info("[PLAYERS_CLEANER] The client already sent all messages")
+        send_message(ch, body, queue_name=self.join_routing_key, exchange_name=self.join_exchange)
+        return
+    
+    def __get_new_players(self, players):
         new_players = []
         for player in players:
             new_players.append({self.match_field: player[self.match_field],
                     self.civ_field: player[self.civ_field],
                     self.winner_field: player[self.winner_field]})
-                    
-        send_message(ch, json.dumps(new_players), queue_name=self.join_routing_key, exchange_name=self.join_exchange)
+        
+        return new_players

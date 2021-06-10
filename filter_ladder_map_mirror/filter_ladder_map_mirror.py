@@ -14,8 +14,6 @@ class FilterLadderMapMirror():
         self.map_field = map_field
         self.mirror_field = mirror_field
         self.id_field = id_field
-        self.winner_rate_counter = 0
-        self.top_civ_counter = 0
 
     def start(self):
         wait_for_rabbit()
@@ -27,23 +25,12 @@ class FilterLadderMapMirror():
 
         create_exchange(channel, self.match_token_exchange, "direct")
 
-        self.__consume_matches(channel, match_queue_name)
-
-    def __consume_matches(self, channel, queue_name):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=queue_name, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, match_queue_name, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         matches = json.loads(body)
         if len(matches) == 0:
-            logging.info(f"WINNER_RATE_COUNTER: {self.winner_rate_counter}")
-            logging.info(f"TOP_CIV_COUNTER: {self.top_civ_counter}")
-            logging.info(f"[FILTER_LADDER_MAP_MIRROR] The client already sent all messages y mando {matches}")
-            send_message(ch, body, queue_name=self.rate_winner_routing_key, exchange_name=self.match_token_exchange)
-            send_message(ch, body, queue_name=self.top_civ_routing_key, exchange_name=self.match_token_exchange)
-            return
+           return self.__handle_end_filter(ch, body)
 
         winner_rate_matches = []
         top_civ_matches = []
@@ -52,14 +39,17 @@ class FilterLadderMapMirror():
             # drop extra rows
             new_match = {self.id_field: match[self.id_field]}
             if self.__meets_winner_rate_condition(match):
-                self.winner_rate_counter += 1
                 winner_rate_matches.append(new_match)
             elif self.__meets_top_civ_condition(match):
-                self.top_civ_counter += 1
                 top_civ_matches.append(new_match)
 
         if len(winner_rate_matches) != 0: send_message(ch, json.dumps(winner_rate_matches), queue_name=self.rate_winner_routing_key, exchange_name=self.match_token_exchange)
         if len(top_civ_matches) != 0: send_message(ch, json.dumps(top_civ_matches), queue_name=self.top_civ_routing_key, exchange_name=self.match_token_exchange)
+
+    def __handle_end_filter(self, ch, body):
+        logging.info(f"[FILTER_LADDER_MAP_MIRROR] The client already sent all messages")
+        send_message(ch, body, queue_name=self.rate_winner_routing_key, exchange_name=self.match_token_exchange)
+        send_message(ch, body, queue_name=self.top_civ_routing_key, exchange_name=self.match_token_exchange)
 
     def __meets_winner_rate_condition(self, match):
         match_ladder = match[self.ladder_field]

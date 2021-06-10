@@ -28,13 +28,7 @@ class Join():
         for reducer_exchange in self.reducer_exchanges:
             create_exchange(channel, reducer_exchange, "direct")
 
-        self.__consume_match_tokens(channel, queue_name)
-
-    def __consume_match_tokens(self, channel, queue_name):
-        logging.info('Waiting for messages. To exit press CTRL+C')
-        channel.basic_qos(prefetch_count=1)
-        channel.basic_consume(queue=queue_name, on_message_callback=self.__callback, auto_ack=True)
-        channel.start_consuming()
+        consume(channel, queue_name, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         elements_parsed = json.loads(body) 
@@ -44,6 +38,14 @@ class Join():
                 send_message(ch, body, queue_name=method.routing_key, exchange_name=reducer_exchange)
             return
         
+        message = self.__get_message(elements_parsed, method)
+        
+        for reducer_id, elements in message.items():
+            exchange_name = self.reducer_exchanges[reducer_id]
+            send_message(ch, json.dumps(elements), queue_name=method.routing_key, 
+            exchange_name=exchange_name)
+
+    def __get_message(self, elements_parsed, method):
         message = {}
         for element in elements_parsed:
             id_to_hash = self.__get_id_to_hash(method, element)
@@ -51,12 +53,8 @@ class Join():
             reducer_id = hashed_id % self.n_reducers
             message[reducer_id] = message.get(reducer_id, [])
             message[reducer_id].append(element)
-        
-        for reducer_id, elements in message.items():
-            exchange_name = self.reducer_exchanges[reducer_id]
-            send_message(ch, json.dumps(elements), queue_name=method.routing_key, 
-            exchange_name=exchange_name)
-       
+        return message
+    
     def __get_id_to_hash(self, method, element):
         id_to_hash = None
         if method.routing_key == self.match_consumer_routing_key:
