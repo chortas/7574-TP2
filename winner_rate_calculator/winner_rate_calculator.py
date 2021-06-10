@@ -20,7 +20,7 @@ class WinnerRateCalculator():
         consume(channel, self.grouped_players_queue, self.__callback)
 
     def __callback(self, ch, method, properties, body):
-        logging.info("Estoy en el callback de winner_rate_calculator")
+        logging.info("To send winner rate result")
         players_by_civ = json.loads(body)
 
         for civ in players_by_civ:

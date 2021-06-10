@@ -60,19 +60,15 @@ class ReducerJoin():
 
     def __send_to_grouped_queue(self, ch):
         result = []
-        n_entries = 0
         for token, players in self.matches_and_players.items():
             if token in self.matches and token in self.players:
-                n_entries += len(players)
                 for player in players:
                     result.append(player)
                 if len(result) == self.batch_to_send:
                     send_message(ch, json.dumps(result), queue_name=self.grouped_result_queue)
                     result = []
-        logging.info(f"ENTRIES: {n_entries}")
 
         logging.info("To send empty body to group by")
         if len(result) != 0: 
-            logging.info("Mandoooo") #TODO: borrar
             send_message(ch, json.dumps(result), queue_name=self.grouped_result_queue)
         send_message(ch, json.dumps({}), queue_name=self.grouped_result_queue)

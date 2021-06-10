@@ -26,7 +26,7 @@ class ReducerGroupBy():
     def __callback(self, ch, method, properties, body):
         players = json.loads(body)
         if len(players) == 0:
-            logging.info("[REDUCER_GROUP_BY] Supuestamente termino")
+            logging.info("[REDUCER_GROUP_BY] Received 1 sentinel")
             return self.__handle_end_group_by(ch)
         
         for player in players:
