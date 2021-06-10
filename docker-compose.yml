@@ -8,8 +8,8 @@ services:
       - 15672:15672
       - 5672:5672
 
-  filter_avg_rating_server_duration:
-    container_name: filter_avg_rating_server_duration
+  filter_avg_rating_server_duration_1:
+    container_name: filter_avg_rating_server_duration_1
     image: filter_avg_rating_server_duration:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -18,12 +18,25 @@ services:
     links: 
       - rabbitmq
     environment:
-      - MATCH_QUEUE=filter_asd_queue
+      - MATCH_QUEUE=filter_arsd_queue
       - OUTPUT_QUEUE=output_queue_1
       - AVG_RATING_FIELD=average_rating
       - SERVER_FIELD=server
       - DURATION_FIELD=duration
       - ID_FIELD=token
+
+  matches_broadcaster_1:
+    container_name: matches_broadcaster_1
+    image: broadcaster:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - ROW_QUEUE=match_queue
+      - QUEUES_TO_SEND=filter_arsd_queue,filter_lmm_queue
 
   group_by_match:
     container_name: group_by_match
@@ -85,19 +98,6 @@ services:
       - RATING_FIELD=rating
       - WINNER_FIELD=winner
 
-  matches_broadcaster:
-    container_name: matches_broadcaster
-    image: broadcaster:latest
-    entrypoint: python3 /main.py
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    links: 
-      - rabbitmq
-    environment:
-      - ROW_QUEUE=match_queue
-      - QUEUES_TO_SEND=filter_asd_queue,filter_lmm_queue
-
   filter_ladder_map_mirror:
     container_name: filter_ladder_map_mirror
     image: filter_ladder_map_mirror:latest
@@ -117,8 +117,8 @@ services:
       - MIRROR_FIELD=mirror
       - ID_FIELD=token
 
-  players_broadcaster:
-    container_name: players_broadcaster
+  players_broadcaster_1:
+    container_name: players_broadcaster_1
     image: broadcaster:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -284,7 +284,7 @@ services:
       - rabbitmq
     environment:
       - QUEUE_NAME=grouped_rate_winner_queue
-      - N_REDUCERS=1
+      - N_REDUCERS=2
       - GROUP_BY_QUEUE=group_by_civ_rate_winner_queue
       - GROUP_BY_FIELD=civ
 
@@ -299,6 +299,22 @@ services:
       - rabbitmq
     environment:
       - GROUP_BY_QUEUE=group_by_civ_rate_winner_queue_1
+      - GROUP_BY_FIELD=civ
+      - GROUPED_PLAYERS_QUEUE=winner_rate_calculator_queue
+      - SENTINEL_AMOUNT=2
+      - BATCH_TO_SEND=1000
+
+  reducer_group_by_civ_rate_winner_2:
+    container_name: reducer_group_by_civ_rate_winner_2
+    image: reducer_group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUP_BY_QUEUE=group_by_civ_rate_winner_queue_2
       - GROUP_BY_FIELD=civ
       - GROUPED_PLAYERS_QUEUE=winner_rate_calculator_queue
       - SENTINEL_AMOUNT=2
@@ -351,8 +367,8 @@ services:
       - SENTINEL_AMOUNT=2
       - BATCH_TO_SEND=1000
 
-  winner_rate_calculator:
-    container_name: winner_rate_calculator
+  winner_rate_calculator_1:
+    container_name: winner_rate_calculator_1
     image: winner_rate_calculator:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -365,8 +381,8 @@ services:
       - OUTPUT_QUEUE=output_queue_3
       - WINNER_FIELD=winner
 
-  top_civ_calculator:
-    container_name: top_civ_calculator
+  top_civ_calculator_1:
+    container_name: top_civ_calculator_1
     image: top_civ_calculator:latest
     entrypoint: python3 /main.py
     restart: on-failure

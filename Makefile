@@ -52,3 +52,7 @@ restart:
 	make docker-compose-down
 	make docker-compose-up
 .PHONY: restart
+
+docker-compose-file:
+	python3 writer_docker_compose.py
+.PHONY: docker-compose-file
