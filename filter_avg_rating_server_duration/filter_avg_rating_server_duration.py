@@ -6,9 +6,9 @@ from datetime import datetime, timedelta
 from common.utils import *
 
 class FilterAvgRatingServerDuration():
-    def __init__(self, match_exchange, output_queue, avg_rating_field, server_field, 
+    def __init__(self, match_queue, output_queue, avg_rating_field, server_field, 
     duration_field, id_field):
-        self.match_exchange = match_exchange
+        self.match_queue = match_queue
         self.output_queue = output_queue
         self.avg_rating_field = avg_rating_field
         self.server_field = server_field
@@ -20,12 +20,10 @@ class FilterAvgRatingServerDuration():
 
         connection, channel = create_connection_and_channel()
 
-        create_exchange(channel, self.match_exchange, "fanout")
-        queue_name = create_and_bind_anonymous_queue(channel, self.match_exchange)
-        
+        create_queue(channel, self.match_queue)
         create_queue(channel, self.output_queue)
 
-        consume(channel, queue_name, self.__callback)
+        consume(channel, self.match_queue, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         matches = json.loads(body)

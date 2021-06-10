@@ -4,9 +4,9 @@ import json
 from common.utils import *
 
 class FilterLadderMapMirror():
-    def __init__(self, match_exchange, match_token_exchange, top_civ_routing_key, 
+    def __init__(self, match_queue, match_token_exchange, top_civ_routing_key, 
     rate_winner_routing_key, ladder_field, map_field, mirror_field, id_field):
-        self.match_exchange = match_exchange
+        self.match_queue = match_queue
         self.match_token_exchange = match_token_exchange
         self.top_civ_routing_key = top_civ_routing_key
         self.rate_winner_routing_key = rate_winner_routing_key
@@ -20,12 +20,10 @@ class FilterLadderMapMirror():
 
         connection, channel = create_connection_and_channel()
 
-        create_exchange(channel, self.match_exchange, "fanout")
-        match_queue_name = create_and_bind_anonymous_queue(channel, self.match_exchange)
-
+        create_queue(channel, self.match_queue)
         create_exchange(channel, self.match_token_exchange, "direct")
 
-        consume(channel, match_queue_name, self.__callback)
+        consume(channel, self.match_queue, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         matches = json.loads(body)

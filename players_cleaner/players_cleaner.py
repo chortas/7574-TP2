@@ -6,9 +6,9 @@ from common.utils import *
 from hashlib import sha256
 
 class PlayersCleaner():
-    def __init__(self, player_exchange, match_field, civ_field, winner_field, 
+    def __init__(self, player_queue, match_field, civ_field, winner_field, 
     join_exchange, join_routing_key):
-        self.player_exchange = player_exchange
+        self.player_queue = player_queue
         self.match_field = match_field
         self.civ_field = civ_field
         self.winner_field = winner_field 
@@ -20,12 +20,10 @@ class PlayersCleaner():
 
         connection, channel = create_connection_and_channel()
 
-        create_exchange(channel, self.player_exchange, "fanout")
-        queue_name = create_and_bind_anonymous_queue(channel, self.player_exchange)
-
+        create_queue(channel, self.player_queue)
         create_exchange(channel, self.join_exchange, "direct")
 
-        consume(channel, queue_name, self.__callback)
+        consume(channel, self.player_queue, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         players = json.loads(body)

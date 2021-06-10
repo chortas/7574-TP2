@@ -7,7 +7,7 @@ from filter_rating import FilterRating
 def parse_config_params():
     config_params = {}
     try:
-        config_params["player_exchange"] = os.environ["PLAYER_EXCHANGE"]
+        config_params["player_queue"] = os.environ["PLAYER_QUEUE"]
         config_params["rating_field"] = os.environ["RATING_FIELD"]
         config_params["match_field"] = os.environ["MATCH_FIELD"]
         config_params["civ_field"] = os.environ["CIV_FIELD"]
@@ -27,7 +27,7 @@ def main():
 
     config_params = parse_config_params()
 
-    filter_rating = FilterRating(config_params["player_exchange"], config_params["rating_field"], 
+    filter_rating = FilterRating(config_params["player_queue"], config_params["rating_field"], 
     config_params["match_field"], config_params["civ_field"], config_params["id_field"],
     config_params["join_exchange"], config_params["join_routing_key"])
     filter_rating.start()

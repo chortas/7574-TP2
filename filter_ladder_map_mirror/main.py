@@ -7,7 +7,7 @@ from filter_ladder_map_mirror import FilterLadderMapMirror
 def parse_config_params():
     config_params = {}
     try:
-        config_params["match_exchange"] = os.environ["MATCH_EXCHANGE"]
+        config_params["match_queue"] = os.environ["MATCH_QUEUE"]
         config_params["match_token_exchange"] = os.environ["MATCH_TOKEN_EXCHANGE"]
         config_params["top_civ_routing_key"] = os.environ["TOP_CIV_ROUTING_KEY"]
         config_params["rate_winner_routing_key"] = os.environ["RATE_WINNER_ROUTING_KEY"]
@@ -28,7 +28,7 @@ def main():
 
     config_params = parse_config_params()
 
-    filter_lmm = FilterLadderMapMirror(config_params["match_exchange"], 
+    filter_lmm = FilterLadderMapMirror(config_params["match_queue"], 
     config_params["match_token_exchange"], config_params["top_civ_routing_key"], 
     config_params["rate_winner_routing_key"], config_params["ladder_field"], 
     config_params["map_field"], config_params["mirror_field"], config_params["id_field"]) 

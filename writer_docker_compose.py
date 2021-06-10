@@ -40,13 +40,13 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     write_header_and_rabbit(compose_file)
 
     #filter_avg_rating_server_duration
-    env_variables = {"MATCH_EXCHANGE": "match_exchange", "OUTPUT_QUEUE": "output_queue_1", 
+    env_variables = {"MATCH_QUEUE": "filter_asd_queue", "OUTPUT_QUEUE": "output_queue_1", 
     "AVG_RATING_FIELD": "average_rating", "SERVER_FIELD": "server", "DURATION_FIELD": "duration", "ID_FIELD": "token"}
     write_section(compose_file, f"filter_avg_rating_server_duration", "filter_avg_rating_server_duration", env_variables)
 
     #group_by_match
     GROUP_BY_MATCH_QUEUE = "group_by_match_queue"
-    env_variables = {"EXCHANGE_NAME": "player_exchange", "N_REDUCERS": N_REDUCERS_GROUP_BY_MATCH, "GROUP_BY_QUEUE": GROUP_BY_MATCH_QUEUE,
+    env_variables = {"QUEUE_NAME": "group_by_player_queue", "N_REDUCERS": N_REDUCERS_GROUP_BY_MATCH, "GROUP_BY_QUEUE": GROUP_BY_MATCH_QUEUE,
     "GROUP_BY_FIELD": "match"}    
     write_section(compose_file, "group_by_match", "group_by", env_variables)
 
@@ -63,26 +63,26 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
       write_section(compose_file, f"filter_solo_winner_player_{i}", "filter_solo_winner_player", env_variables)
 
     # matches_broadcaster
-    env_variables = {"QUEUE_NAME": "match_queue", "EXCHANGE_NAME": "match_exchange"}    
+    env_variables = {"ROW_QUEUE": "match_queue", "QUEUES_TO_SEND": "filter_asd_queue,filter_lmm_queue"}    
     write_section(compose_file, "matches_broadcaster", "broadcaster", env_variables)
     
     # filter_ladder_map_mirror
-    env_variables = {"MATCH_EXCHANGE": "match_exchange", "MATCH_TOKEN_EXCHANGE": "match_token_exchange", 
+    env_variables = {"MATCH_QUEUE": "filter_lmm_queue", "MATCH_TOKEN_EXCHANGE": "match_token_exchange", 
     "TOP_CIV_ROUTING_KEY": "top_civ_routing_key", "RATE_WINNER_ROUTING_KEY": "rate_winner_routing_key", 
     "LADDER_FIELD": "ladder", "MAP_FIELD": "map", "MIRROR_FIELD": "mirror", "ID_FIELD": "token"}    
     write_section(compose_file, "filter_ladder_map_mirror", "filter_ladder_map_mirror", env_variables)
 
     # players_broadcaster
-    env_variables = {"QUEUE_NAME": "player_queue", "EXCHANGE_NAME": "player_exchange"}    
+    env_variables = {"ROW_QUEUE": "player_queue", "QUEUES_TO_SEND": "player_cleaner_queue,filter_rating_queue,group_by_player_queue"}    
     write_section(compose_file, "players_broadcaster", "broadcaster", env_variables)    
     
     # players_cleaner
-    env_variables = {"PLAYER_EXCHANGE": "player_exchange", "MATCH_FIELD": "match", "CIV_FIELD": "civ", "WINNER_FIELD": "winner",
+    env_variables = {"PLAYER_QUEUE": "player_cleaner_queue", "MATCH_FIELD": "match", "CIV_FIELD": "civ", "WINNER_FIELD": "winner",
     "JOIN_EXCHANGE": "match_token_exchange", "JOIN_ROUTING_KEY": "player_rate_winner_routing_key"}
     write_section(compose_file, "players_cleaner", "players_cleaner", env_variables)
 
     # filter_rating
-    env_variables = {"PLAYER_EXCHANGE": "player_exchange", "RATING_FIELD": "rating", "MATCH_FIELD": "match", 
+    env_variables = {"PLAYER_QUEUE": "filter_rating_queue", "RATING_FIELD": "rating", "MATCH_FIELD": "match", 
     "CIV_FIELD": "civ", "ID_FIELD": "token", "JOIN_EXCHANGE": "match_token_exchange", 
     "JOIN_ROUTING_KEY": "player_top_civ_routing_key" }
     write_section(compose_file, "filter_rating", "filter_rating", env_variables)    

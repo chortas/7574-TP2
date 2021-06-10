@@ -8,12 +8,7 @@ from common.utils import *
 def parse_config_params():
     config_params = {}
     try:
-        config_params["exchange_name"] = (os.environ["EXCHANGE_NAME"]
-                                            if "EXCHANGE_NAME" in os.environ
-                                            else "") 
-        config_params["queue_name"] = (os.environ["QUEUE_NAME"]
-                                            if "QUEUE_NAME" in os.environ
-                                            else "") 
+        config_params["queue_name"] = os.environ["QUEUE_NAME"]
         config_params["n_reducers"] = os.environ["N_REDUCERS"]
         config_params["group_by_queue"] = os.environ["GROUP_BY_QUEUE"]
         config_params["group_by_field"] = os.environ["GROUP_BY_FIELD"]
@@ -31,8 +26,7 @@ def main():
     config_params = parse_config_params()
 
     group_by = GroupBy(int(config_params["n_reducers"]), config_params["group_by_queue"], 
-    config_params["group_by_field"], config_params["exchange_name"], 
-    config_params["queue_name"])
+    config_params["group_by_field"], config_params["queue_name"])
     group_by.start()
 
 def initialize_log():

@@ -7,8 +7,8 @@ from broadcaster import Broadcaster
 def parse_config_params():
     config_params = {}
     try:
-        config_params["queue_name"] = os.environ["QUEUE_NAME"]
-        config_params["exchange_name"] = os.environ["EXCHANGE_NAME"]
+        config_params["row_queue"] = os.environ["ROW_QUEUE"]
+        config_params["queues_to_send"] = os.environ["QUEUES_TO_SEND"].split(',')
 
     except KeyError as e:
         raise KeyError("Key was not found. Error: {} .Aborting".format(e))
@@ -22,7 +22,7 @@ def main():
 
     config_params = parse_config_params()
 
-    broadcaster = Broadcaster(config_params["queue_name"], config_params["exchange_name"])
+    broadcaster = Broadcaster(config_params["row_queue"], config_params["queues_to_send"])
     broadcaster.start()
 
 def initialize_log():

@@ -7,7 +7,7 @@ from players_cleaner import PlayersCleaner
 def parse_config_params():
     config_params = {}
     try:
-        config_params["player_exchange"] = os.environ["PLAYER_EXCHANGE"]
+        config_params["player_queue"] = os.environ["PLAYER_QUEUE"]
         config_params["match_field"] = os.environ["MATCH_FIELD"]
         config_params["civ_field"] = os.environ["CIV_FIELD"]
         config_params["winner_field"] = os.environ["WINNER_FIELD"]
@@ -26,7 +26,7 @@ def main():
 
     config_params = parse_config_params()
 
-    players_cleaner = PlayersCleaner(config_params["player_exchange"],
+    players_cleaner = PlayersCleaner(config_params["player_queue"],
     config_params["match_field"], config_params["civ_field"], config_params["winner_field"],
     config_params["join_exchange"], config_params["join_routing_key"])
     players_cleaner.start()

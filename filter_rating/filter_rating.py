@@ -4,9 +4,9 @@ import json
 from common.utils import *
 
 class FilterRating():
-    def __init__(self, player_exchange, rating_field, match_field, civ_field, id_field,
+    def __init__(self, player_queue, rating_field, match_field, civ_field, id_field,
     join_exchange, join_routing_key):
-        self.player_exchange = player_exchange
+        self.player_queue = player_queue
         self.rating_field = rating_field
         self.match_field = match_field
         self.civ_field = civ_field
@@ -19,12 +19,10 @@ class FilterRating():
 
         connection, channel = create_connection_and_channel()
 
-        create_exchange(channel, self.player_exchange, "fanout")
-        queue_name = create_and_bind_anonymous_queue(channel, self.player_exchange)
-
+        create_queue(channel, self.player_queue)
         create_exchange(channel, self.join_exchange, "direct")
 
-        consume(channel, queue_name, self.__callback)
+        consume(channel, self.player_queue, self.__callback)
 
     def __callback(self, ch, method, properties, body):
         players = json.loads(body)

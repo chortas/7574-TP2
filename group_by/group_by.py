@@ -6,11 +6,10 @@ from common.utils import *
 from hashlib import sha256
 
 class GroupBy():
-    def __init__(self, n_reducers, group_by_queue, group_by_field, exchange_name, queue_name):
+    def __init__(self, n_reducers, group_by_queue, group_by_field, queue_name):
         self.reducer_queues = [f"{group_by_queue}_{i}" for i in range(1, n_reducers+1)]
         self.n_reducers = n_reducers
         self.group_by_field = group_by_field
-        self.exchange_name = exchange_name
         self.queue_name = queue_name
     
     def start(self):
@@ -18,11 +17,7 @@ class GroupBy():
 
         connection, channel = create_connection_and_channel()
 
-        if self.exchange_name:
-            create_exchange(channel, self.exchange_name, "fanout")
-            self.queue_name = create_and_bind_anonymous_queue(channel, self.exchange_name)
-        elif self.queue_name:
-            create_queue(channel, self.queue_name)
+        create_queue(channel, self.queue_name)
 
         for reducer_queue in self.reducer_queues:
             create_queue(channel, reducer_queue)
