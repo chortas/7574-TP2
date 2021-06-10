@@ -4,7 +4,7 @@
 
 ### Script de generación del docker compose
 
-Se corre con el comando `make docker-compose-file`. Para parametrizar la cantidad de nodos y poder escalar el sistema se requiere ver las primeras lineas del mismo donde se explica cómo hacerlo.
+Se corre con el comando `make docker-compose-file`. Para parametrizar la cantidad de nodos y poder escalar el sistema se requiere ver las primeras lineas del script `write_docker_compose.py` donde se explica cómo hacerlo.
 
 ### Corrida
 
