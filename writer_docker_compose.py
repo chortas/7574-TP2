@@ -17,14 +17,6 @@ Los nodos que no están incluidos en estas constantes no pueden escalarse (son n
 por el esquema de centinelas planteado.
 '''
 
-# matches_broadcaster
-# TODO: pensar los centinelas en este contexto
-N_MATCHES_BROADCASTER = 1
-
-# players_broadcaster
-# TODO: pensar los centinelas en este contexto
-N_PLAYERS_BROADCASTER = 1
-
 # filter_avg_rating_server_duration
 N_FILTER_ARSD = 1
 
@@ -81,8 +73,7 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
 
     # matches_broadcaster
     env_variables = {"ROW_QUEUE": "match_queue", "QUEUES_TO_SEND": "filter_arsd_queue,filter_lmm_queue"}    
-    for i in range(1, N_MATCHES_BROADCASTER+1):
-      write_section(compose_file, f"matches_broadcaster_{i}", "broadcaster", env_variables)
+    write_section(compose_file, "matches_broadcaster", "broadcaster", env_variables)
     
     # group_by_match
     GROUP_BY_MATCH_QUEUE = "group_by_match_queue"
@@ -110,8 +101,7 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
 
     # players_broadcaster
     env_variables = {"ROW_QUEUE": "player_queue", "QUEUES_TO_SEND": "player_cleaner_queue,filter_rating_queue,group_by_player_queue"}    
-    for i in range(1, N_PLAYERS_BROADCASTER+1):
-      write_section(compose_file, f"players_broadcaster_{i}", "broadcaster", env_variables)    
+    write_section(compose_file, "players_broadcaster", "broadcaster", env_variables)    
     
     # players_cleaner
     env_variables = {"PLAYER_QUEUE": "player_cleaner_queue", "MATCH_FIELD": "match", "CIV_FIELD": "civ", "WINNER_FIELD": "winner",

@@ -25,8 +25,8 @@ services:
       - DURATION_FIELD=duration
       - ID_FIELD=token
 
-  matches_broadcaster_1:
-    container_name: matches_broadcaster_1
+  matches_broadcaster:
+    container_name: matches_broadcaster
     image: broadcaster:latest
     entrypoint: python3 /main.py
     restart: on-failure
@@ -117,8 +117,8 @@ services:
       - MIRROR_FIELD=mirror
       - ID_FIELD=token
 
-  players_broadcaster_1:
-    container_name: players_broadcaster_1
+  players_broadcaster:
+    container_name: players_broadcaster
     image: broadcaster:latest
     entrypoint: python3 /main.py
     restart: on-failure
