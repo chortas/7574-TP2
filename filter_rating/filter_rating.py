@@ -39,8 +39,6 @@ class FilterRating():
             send_message(ch, body, queue_name=self.join_routing_key, exchange_name=self.join_exchange)
             return
 
-        logging.info("Estoy en el callback del filtro")
-
         result = []
         for player in players:
             rating = int(player[self.rating_field]) if player[self.rating_field] else 0
@@ -50,5 +48,4 @@ class FilterRating():
                         self.id_field: player[self.id_field]}
                 result.append(new_player)
         
-        logging.info("Estoy mandando al join")
         send_message(ch, json.dumps(result), queue_name=self.join_routing_key, exchange_name=self.join_exchange)

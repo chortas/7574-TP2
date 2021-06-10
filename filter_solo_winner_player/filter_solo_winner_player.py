@@ -35,7 +35,7 @@ class FilterSoloWinnerPlayer():
         
         for match, players in matches.items():
             if self.__meets_the_condition(match, players):
-                logging.info("Un juego cumplio la condicion!")
+                logging.info("Estoy por escribir en output 2")
                 send_message(ch, match, queue_name=self.output_queue)
         
     def __meets_the_condition(self, match, players):
@@ -48,5 +48,5 @@ class FilterSoloWinnerPlayer():
                 rating_winner = int(player[self.rating_field])
             else:
                 rating_loser = int(player[self.rating_field])
-
+        
         return rating_loser != 0 and rating_winner > 1000 and ((rating_loser - rating_winner) / rating_winner) * 100 > 30

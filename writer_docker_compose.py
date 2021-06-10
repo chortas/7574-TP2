@@ -11,12 +11,12 @@ services:
       - 5672:5672
 """
 
-N_REDUCERS_GROUP_BY_MATCH = 5
+N_REDUCERS_GROUP_BY_MATCH = 2
 N_REDUCERS_RATE_WINNER_JOIN = 2
 N_REDUCERS_TOP_CIV_JOIN = 2
 N_REDUCERS_GROUP_BY_CIV_RATE_WINNER = 1
 N_REDUCERS_GROUP_BY_CIV_TOP_CIV = 2
-N_FILTER_SOLO_WINNER_PLAYER = 3
+N_FILTER_SOLO_WINNER_PLAYER = 1
 
 def write_header_and_rabbit(compose_file):
     compose_file.write(HEADER_AND_RABBIT)
@@ -45,7 +45,7 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     write_section(compose_file, f"filter_avg_rating_server_duration", "filter_avg_rating_server_duration", env_variables)
 
     #group_by_match
-    ''''GROUP_BY_MATCH_QUEUE = "group_by_match_queue"
+    GROUP_BY_MATCH_QUEUE = "group_by_match_queue"
     env_variables = {"EXCHANGE_NAME": "player_exchange", "N_REDUCERS": N_REDUCERS_GROUP_BY_MATCH, "GROUP_BY_QUEUE": GROUP_BY_MATCH_QUEUE,
     "GROUP_BY_FIELD": "match"}    
     write_section(compose_file, "group_by_match", "group_by", env_variables)
@@ -53,11 +53,11 @@ with open(DOCKER_COMPOSE_FILE_NAME, "w") as compose_file:
     #reducers_group_by_match
     for i in range(1, N_REDUCERS_GROUP_BY_MATCH+1):
       env_variables = {"GROUP_BY_QUEUE": f"{GROUP_BY_MATCH_QUEUE}_{i}", "GROUP_BY_FIELD": "match", 
-      "GROUPED_PLAYERS_QUEUE": "grouped_players_queue"}        
-      write_section(compose_file, f"reducer_group_by_match_{i}", "reducer_group_by", env_variables)'''
+      "GROUPED_PLAYERS_QUEUE": "grouped_players_queue_filter_swp"}        
+      write_section(compose_file, f"reducer_group_by_match_{i}", "reducer_group_by", env_variables)
     
     # filter_solo_winner_player
-    env_variables = {"GROUPED_PLAYERS_QUEUE": "grouped_players_queue", "OUTPUT_QUEUE": "output_queue_2", 
+    env_variables = {"GROUPED_PLAYERS_QUEUE": "grouped_players_queue_filter_swp", "OUTPUT_QUEUE": "output_queue_2", 
     "RATING_FIELD": "rating", "WINNER_FIELD": "winner"}    
     for i in range(1, N_FILTER_SOLO_WINNER_PLAYER+1):
       write_section(compose_file, f"filter_solo_winner_player_{i}", "filter_solo_winner_player", env_variables)

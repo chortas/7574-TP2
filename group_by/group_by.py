@@ -37,10 +37,8 @@ class GroupBy():
 
     def __callback(self, ch, method, properties, body):
         players = json.loads(body)
-        logging.info(f"Recibi players con len: {len(players)}")
 
         if len(players) == 0:
-            logging.info("[GROUP_BY] The client already sent all messages")
             for reducer_queue in self.reducer_queues:
                 send_message(ch, body, queue_name=reducer_queue)
             return
@@ -54,8 +52,6 @@ class GroupBy():
             message[reducer_id] = message.get(reducer_id, [])
             message[reducer_id].append(player)
 
-        logging.info(f"Estoy por enviar")
         for reducer_id, elements in message.items():
             send_message(ch, json.dumps(elements), queue_name=self.reducer_queues[reducer_id])
         
-        logging.info(f"Procese los players")

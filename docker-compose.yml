@@ -25,6 +25,49 @@ services:
       - DURATION_FIELD=duration
       - ID_FIELD=token
 
+  group_by_match:
+    container_name: group_by_match
+    image: group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - EXCHANGE_NAME=player_exchange
+      - N_REDUCERS=2
+      - GROUP_BY_QUEUE=group_by_match_queue
+      - GROUP_BY_FIELD=match
+
+  reducer_group_by_match_1:
+    container_name: reducer_group_by_match_1
+    image: reducer_group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUP_BY_QUEUE=group_by_match_queue_1
+      - GROUP_BY_FIELD=match
+      - GROUPED_PLAYERS_QUEUE=grouped_players_queue_filter_swp
+
+  reducer_group_by_match_2:
+    container_name: reducer_group_by_match_2
+    image: reducer_group_by:latest
+    entrypoint: python3 /main.py
+    restart: on-failure
+    depends_on:
+      - rabbitmq
+    links: 
+      - rabbitmq
+    environment:
+      - GROUP_BY_QUEUE=group_by_match_queue_2
+      - GROUP_BY_FIELD=match
+      - GROUPED_PLAYERS_QUEUE=grouped_players_queue_filter_swp
+
   filter_solo_winner_player_1:
     container_name: filter_solo_winner_player_1
     image: filter_solo_winner_player:latest
@@ -35,37 +78,7 @@ services:
     links: 
       - rabbitmq
     environment:
-      - GROUPED_PLAYERS_QUEUE=grouped_players_queue
-      - OUTPUT_QUEUE=output_queue_2
-      - RATING_FIELD=rating
-      - WINNER_FIELD=winner
-
-  filter_solo_winner_player_2:
-    container_name: filter_solo_winner_player_2
-    image: filter_solo_winner_player:latest
-    entrypoint: python3 /main.py
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    links: 
-      - rabbitmq
-    environment:
-      - GROUPED_PLAYERS_QUEUE=grouped_players_queue
-      - OUTPUT_QUEUE=output_queue_2
-      - RATING_FIELD=rating
-      - WINNER_FIELD=winner
-
-  filter_solo_winner_player_3:
-    container_name: filter_solo_winner_player_3
-    image: filter_solo_winner_player:latest
-    entrypoint: python3 /main.py
-    restart: on-failure
-    depends_on:
-      - rabbitmq
-    links: 
-      - rabbitmq
-    environment:
-      - GROUPED_PLAYERS_QUEUE=grouped_players_queue
+      - GROUPED_PLAYERS_QUEUE=grouped_players_queue_filter_swp
       - OUTPUT_QUEUE=output_queue_2
       - RATING_FIELD=rating
       - WINNER_FIELD=winner

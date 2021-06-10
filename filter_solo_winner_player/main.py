@@ -26,7 +26,7 @@ def main():
 
     filter_swp = FilterSoloWinnerPlayer(config_params["grouped_players_queue"], 
     config_params["output_queue"], config_params["rating_field"], config_params["winner_field"])
-    #filter_swp.start()
+    filter_swp.start()
 
 def initialize_log():
     """
